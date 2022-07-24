@@ -11,7 +11,8 @@
             </div>
             <div>
                 <button [attr.hidden]="isAttendance ? null : ''" type="button"
-                    class="btn btn-sm shadow-none btn-secondary m-1" (click)="isAttendance=!isAttendance;">
+                    class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="isAttendance=!isAttendance;isEditPont=true">
                     Điểm danh
                 </button>
                 <button [attr.hidden]="isAttendance ? '' : null" type="button"
@@ -19,8 +20,7 @@
                     Lưu
                 </button>
                 <button [attr.hidden]="isAttendance ? null : ''" type="button"
-                    class="btn btn-sm shadow-none btn-secondary m-1"
-                    (click)="isEditPont=!isEditPont; isAttendance=!isEditPont">
+                    class="btn btn-sm shadow-none btn-secondary m-1" (click)="isEditPont=!isEditPont;">
                     Sửa điểm
                 </button>
             </div>
