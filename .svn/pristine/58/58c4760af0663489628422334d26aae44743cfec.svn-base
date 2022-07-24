@@ -1,0 +1,132 @@
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>{{dataset.id}} - {{dataset.name}}</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+            <div>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" (click)="onManageDataset()">
+                    Back
+                    <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                </button>
+            </div>
+        </div>
+        <div>
+            <span class="badge badge-success mr-1">
+                <img src=" ./assets/icon/outlined/application/sync.svg" class="icon-xs icon-success">
+                <!-- lấy trạng thái của stage cuối để đổi mầu -->
+                Inprogress ({{dataset.progress}}/7)
+            </span>
+            <span class="badge badge-secondary mr-1">{{dataset.countFeature}} Features</span>
+        </div>
+
+        <ul class="tab-bar">
+            <li class="tab-bar-item" [class.active]="currentStage === 1" (click)="onChangeCurrentStage(1)">
+                <div class="text-muted">Clean</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 2" (click)="onChangeCurrentStage(2)">
+                <div class="text-muted">Fill</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 3" (click)="onChangeCurrentStage(3)">
+                <div class="text-muted">Scale</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 4" (click)="onChangeCurrentStage(4)">
+                <div class="text-muted">Encode</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 5" (click)="onChangeCurrentStage(5)">
+                <div class="text-muted">Split</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 6" (click)="onChangeCurrentStage(6)">
+                <div class="text-muted">Balance</div>
+            </li>
+            <li class="tab-bar-item" [class.active]="currentStage === 7" (click)="onChangeCurrentStage(7)">
+                <div class="text-muted">Completed</div>
+            </li>
+        </ul>
+        <hr>
+        <!-- <ul class="tab-bar">
+            <li class="tab-bar-item active"><a class="text-muted">Clean</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Fill</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Scale</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Encode</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Split</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Balance</a></li>
+            <li class="tab-bar-item"><a class="text-muted">Completed</a></li>
+        </ul>
+        <hr> -->
+        <div id="content" class="row">
+            <div class="col-3">
+                <table class="table">
+                    <tr class="table-active">
+                        <th>Infomation</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div *ngIf="dataConfig.status === 2" class="text-warning">Insert to feature store... Running
+                            </div>
+                            <div *ngIf="dataConfig.status === 3" class="text-success">Insert to feature store... Done
+                            </div>
+                            <div *ngIf="dataConfig.status === 4" class="text-danger">Insert to feature store... Error
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="text-muted">The new dataset is: không hiểu để làm gì</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="text-muted">The new item rule id is: không hiểu để làm gì</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div *ngIf="dataConfig.status === 2" class="text-warning">Clean data... Running</div>
+                            <div *ngIf="dataConfig.status === 3" class="text-success">Clean data... Done</div>
+                            <div *ngIf="dataConfig.status === 4" class="text-danger">Clean data... Error</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-9">
+                <div class="table-scroll table-border" style="height: 500px;">
+                    <table class="mb-0">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Column</th>
+                                <th>None-null count</th>
+                                <th>Data type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dataProfile of dataProfiles; let i = index">
+                                <td>
+                                    <div class="text-muted">{{minSTT + i}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{dataProfile.featureName}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{dataProfile.countValid}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">
+                                        <div class="btn btn-sm badge-warning">{{dataProfile.dataType}}</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <app-pagging></app-pagging>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->

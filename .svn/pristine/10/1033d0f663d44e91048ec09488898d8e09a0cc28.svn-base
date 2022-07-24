@@ -1,0 +1,33 @@
+export class EvaluationSearchParamModel {
+    algorithm_code:string;
+    modelID: string;
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1: number;
+    rmse: number;
+    score: number;
+    rank: number;
+    createdUser: string;
+    maze: number;
+    createdTime: string;
+    status: number;
+    projectId: string;
+    constructor() {
+    }
+  
+    /** set giá trị từ form value */
+    build(formValue: {}): EvaluationSearchParamModel {
+      const searchParam = new EvaluationSearchParamModel();
+      if (!formValue) {
+        return searchParam;
+      }
+  
+      // for (const [key, value] of Object.entries(searchParam)) { }
+      for (let key in formValue) {
+        searchParam[key] = formValue[key];
+      }
+  
+      return searchParam;
+    }
+  }

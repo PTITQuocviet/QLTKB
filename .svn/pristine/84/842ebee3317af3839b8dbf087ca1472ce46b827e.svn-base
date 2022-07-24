@@ -1,0 +1,108 @@
+import { User } from './../login/user.model';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { LoginService } from '../login/login.service';
+import { SidebarService } from '../sidebar/sidebar.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ProjectService } from '../project/project.service';
+import { ProjectSearchParamModel } from '../project/project-search-param.model';
+import { ProjectModel } from '../project/project.model';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { Pipe, PipeTransform } from '@angular/core';
+import { FilterPipe } from './filter.pipe';
+import { NgForm } from '@angular/forms';
+
+@Component({
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css'],
+  // providers: [FilterPipe],
+})
+export class NavbarComponent implements OnInit {
+  user: User;
+  isManageProjectPage: boolean;
+  private sidebarCollapsed: boolean;
+  isBack: boolean = false;
+  projects: ProjectModel[] = [];
+  flag: boolean = false;
+  href: string = '';
+  arrayUrl: string[];
+
+  nameUrl: string = '';
+  searchText = '';
+
+  @ViewChild('formFilter') formFilter: NgForm;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private loginService: LoginService,
+    private sidebarService: SidebarService,
+    private projectService: ProjectService
+  ) {}
+
+  ngOnInit(): void {
+    this.sidebarService.sidebarCollapsed.subscribe((isCollapsed) => {
+      this.sidebarCollapsed = isCollapsed;
+
+      this.loginService.user.subscribe((user) => {
+        this.user = user;
+      });
+    });
+
+    this.route.url.subscribe((url) => {
+      if (url.length === 1 && url[0].path === 'project') {
+        this.isManageProjectPage = true;
+      } else {
+        this.isManageProjectPage = false;
+      }
+    });
+
+    // auto search
+    this.flag = true;
+
+    let searchParam = new ProjectSearchParamModel();
+    let pagging = new PaggingModel(500);
+    this.projectService
+      .requestSearch(pagging, searchParam)
+      .subscribe((resultPagging) => {
+        this.projects = resultPagging.results;
+      });
+  }
+
+  toogleSidebar(event: Event) {
+    event.preventDefault();
+    this.sidebarService.sidebarCollapsed.next(!this.sidebarCollapsed);
+  }
+
+  onLogout() {
+    this.loginService.logout();
+  }
+
+  getUser() {
+    return this.user.username;
+  }
+
+  backProject() {
+    // this.router.navigate(['/project']);
+    this.router.navigateByUrl('/project');
+  }
+
+  // get id on url
+  getId() {
+    this.href = this.router.url;
+
+    this.arrayUrl = this.href.split('/');
+
+    return this.arrayUrl[2];
+  }
+
+  // get Name of id on url
+  getNameUrl() {
+    for (let index = 0; index < this.projects.length; index++) {
+      if (this.getId() === this.projects[index].id) {
+        this.nameUrl = this.projects[index].name;
+      }
+    }
+    return this.nameUrl;
+  }
+}

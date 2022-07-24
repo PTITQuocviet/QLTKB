@@ -1,0 +1,401 @@
+import { Component,  ElementRef,  OnInit, ViewChild } from '@angular/core';
+import {  ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { EvaluationModel } from './evaluation.model';
+import { PaggingService } from '../pagging/pagging.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { EvaluationSearchParamModel } from './evaluation-search-param.model';
+import { NgForm } from '@angular/forms';
+import{EvaluationService} from './evaluation.service'
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+@Component({
+  selector: 'app-evaluation',
+  templateUrl: './evaluation.component.html',
+  styleUrls: ['./evaluation.component.css']
+})
+
+export class EvaluationComponent implements OnInit {
+  evaluations : EvaluationModel[]=[] ;
+  @ViewChild('wrapper', { static: true }) wrapper: ElementRef;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+
+  @ViewChild('modalCreateProject', { static: true }) modalCreateProject: ElementRef;
+  @ViewChild('modalEditProject', { static: true }) modalEditProject: ElementRef;
+
+  @ViewChild('formFilter') formFilter: NgForm;
+
+  modalService: any;
+  closeModalResult: string;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentDateUnix: number;
+  paggingSubscription: Subscription;
+  constructor(
+    private paggingService: PaggingService,
+    private EvaluationService: EvaluationService,
+    private route: ActivatedRoute,
+  ){
+    const evaluation1= new EvaluationModel();
+    evaluation1.model='#000008';
+    evaluation1.algorithm_code='DecisionTreeClassifier';
+    evaluation1.accuracy=0.854;
+    evaluation1.precision=0.662;
+    evaluation1.recall=0.548;
+    evaluation1.f1=0.600;
+    evaluation1.rank=1;
+    evaluation1.maze=0.146;
+    evaluation1.rmse=0.382;
+    evaluation1.score=5.803;
+    evaluation1.createdUser= 'FIS';
+    evaluation1.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+
+    const evaluation2= new EvaluationModel();
+    evaluation2.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation3= new EvaluationModel();
+    evaluation3.model='#000007';
+    evaluation3.algorithm_code='DecisionTreeClassifier';
+    evaluation3.accuracy=0.794;
+    evaluation3.precision=0.488;
+    evaluation3.recall=0.677;
+    evaluation3.f1=0.568;
+    evaluation3.rank=3;
+    evaluation3.maze=0.206;
+    evaluation3.rmse=0.454;
+    evaluation3.score=5.504;
+    evaluation3.createdUser= 'FIS';
+    evaluation3.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation4= new EvaluationModel();
+    evaluation4.model='#000007';
+    evaluation4.algorithm_code='DecisionTreeClassifier';
+    evaluation4.accuracy=0.794;
+    evaluation4.precision=0.488;
+    evaluation4.recall=0.677;
+    evaluation4.f1=0.568;
+    evaluation4.rank=2;
+    evaluation4.maze=0.206;
+    evaluation4.rmse=0.454;
+    evaluation4.score=5.504;
+    evaluation4.createdUser= 'FIS';
+    evaluation4.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation5= new EvaluationModel();
+    evaluation5.model='#000007';
+    evaluation5.algorithm_code='DecisionTreeClassifier';
+    evaluation5.accuracy=0.794;
+    evaluation5.precision=0.488;
+    evaluation5.recall=0.677;
+    evaluation5.f1=0.568;
+    evaluation5.rank=2;
+    evaluation5.maze=0.206;
+    evaluation5.rmse=0.454;
+    evaluation5.score=5.504;
+    evaluation5.createdUser= 'FIS';
+    evaluation5.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation6= new EvaluationModel();
+    evaluation6.model='#000007';
+    evaluation6.algorithm_code='DecisionTreeClassifier';
+    evaluation6.accuracy=0.794;
+    evaluation6.precision=0.488;
+    evaluation6.recall=0.677;
+    evaluation6.f1=0.568;
+    evaluation6.rank=2;
+    evaluation6.maze=0.206;
+    evaluation6.rmse=0.454;
+    evaluation6.score=5.504;
+    evaluation6.createdUser= 'FIS';
+    evaluation6.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation7= new EvaluationModel();
+    evaluation7.model='#000007';
+    evaluation7.algorithm_code='DecisionTreeClassifier';
+    evaluation7.accuracy=0.794;
+    evaluation7.precision=0.488;
+    evaluation7.recall=0.677;
+    evaluation7.f1=0.568;
+    evaluation7.rank=2;
+    evaluation7.maze=0.206;
+    evaluation7.rmse=0.454;
+    evaluation7.score=5.504;
+    evaluation7.createdUser= 'FIS';
+    evaluation7.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation8= new EvaluationModel();
+    evaluation8.model='#000007';
+    evaluation8.algorithm_code='DecisionTreeClassifier';
+    evaluation8.accuracy=0.794;
+    evaluation8.precision=0.488;
+    evaluation8.recall=0.677;
+    evaluation8.f1=0.568;
+    evaluation8.rank=2;
+    evaluation8.maze=0.206;
+    evaluation8.rmse=0.454;
+    evaluation8.score=5.504;
+    evaluation8.createdUser= 'FIS';
+    evaluation8.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation9= new EvaluationModel();
+    evaluation9.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation10= new EvaluationModel();
+    evaluation10.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation11= new EvaluationModel();
+    evaluation11.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation12= new EvaluationModel();
+    evaluation12.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation13= new EvaluationModel();
+    evaluation13.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation14= new EvaluationModel();
+    evaluation14.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation15= new EvaluationModel();
+    evaluation15.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation16= new EvaluationModel();
+    evaluation16.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation17= new EvaluationModel();
+    evaluation17.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation18= new EvaluationModel();
+    evaluation18.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+    const evaluation19= new EvaluationModel();
+    evaluation19.model='#000007';
+    evaluation2.algorithm_code='DecisionTreeClassifier';
+    evaluation2.accuracy=0.794;
+    evaluation2.precision=0.488;
+    evaluation2.recall=0.677;
+    evaluation2.f1=0.568;
+    evaluation2.rank=2;
+    evaluation2.maze=0.206;
+    evaluation2.rmse=0.454;
+    evaluation2.score=5.504;
+    evaluation2.createdUser= 'FIS';
+    evaluation2.createdTime= new Date().toJSON(" dd/MM/yyyy ");
+
+
+    this.evaluations.push(evaluation1);
+    this.evaluations.push(evaluation2);
+    this.evaluations.push(evaluation3);
+    this.evaluations.push(evaluation4);
+    this.evaluations.push(evaluation5);
+    this.evaluations.push(evaluation6);
+    this.evaluations.push(evaluation1);
+    this.evaluations.push(evaluation2);
+    this.evaluations.push(evaluation3);
+    this.evaluations.push(evaluation1);
+    this.evaluations.push(evaluation2);
+    this.evaluations.push(evaluation3);
+    // this.evaluations.push(evaluation1);
+    // this.evaluations.push(evaluation2);
+    // this.evaluations.push(evaluation3);
+    // this.evaluations.push(evaluation1);
+    // this.evaluations.push(evaluation2);
+    // this.evaluations.push(evaluation3);
+    // this.evaluations.push(evaluation1);
+    // this.evaluations.push(evaluation2);
+    // this.evaluations.push(evaluation3);
+    // this.evaluations.push(evaluation1);
+    // this.evaluations.push(evaluation2);
+    // this.evaluations.push(evaluation3);
+  }
+
+  ngOnInit(): void {
+
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+
+  }
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new EvaluationSearchParamModel();
+    // TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.modelID = this.route.snapshot.params['model'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.EvaluationService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this. evaluations = resultPagging.results;
+      });
+  }
+
+
+// btnDeploy(){
+//   var txt;
+//   if (confirm("Press a button!")) {
+//     txt = "You pressed OK!";
+//     window.open()
+//   } else {
+//     txt = "You pressed Cancel!";
+//   }
+// }
+
+openModalCreateProject() {
+  this.modalService.open(this.modalCreateProject, {})
+    .result
+    .then(
+      (result) => {//Closed
+        console.log(result);
+        if (result === 'create') {//không dùng
+          console.log(this.formCreate);
+        }
+      }, (reason) => {//Dismissed
+        this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+        console.log(this.closeModalResult);
+      });
+}
+private getDismissModalReason(reason: any): string {
+  if (reason === ModalDismissReasons.ESC) {
+    return 'by pressing ESC';
+  } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+    return 'by clicking on a backdrop';
+  } else {
+    return `with: ${reason}`;
+  }
+}
+
+
+}
+
+

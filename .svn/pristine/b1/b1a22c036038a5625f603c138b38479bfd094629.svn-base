@@ -1,0 +1,225 @@
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+import { FeatureSetModel } from './feature-set.model';
+import { FeatureSetService } from './feature-set.service';
+import { FeatureSetParamModel } from './feature-set-param.model';
+import { FeatureSetSearchParamModel } from './feature-set-search-param.model';
+
+import { DatasetModel } from '../dataset/dataset.model';
+import { MethodModel } from '../shared/model/method.model';
+import { DatasetService } from '../dataset/dataset.service';
+import { PaggingService } from '../pagging/pagging.service';
+import { MetaService } from '../shared/service/meta.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { DatasetSearchParamModel } from '../dataset/dataset-search-param.model';
+import { MethodSearchParamModel } from '../shared/model/method-search-param.model';
+import { FeatureSetParamSearchParamModel } from '../shared/model/feature-set-param-search-param.model';
+import { FeatureSetParamRunModel } from './feature-set-param-run.model';
+import { Subscription } from 'rxjs';
+import { UtilService } from '../shared/util.service';
+
+@Component({
+  selector: 'app-feature-set',
+  templateUrl: './feature-set.component.html',
+  styleUrls: ['./feature-set.component.css']
+})
+export class FeatureSetComponent implements OnInit, OnDestroy {
+
+  mapFeatureSetStatus = {
+    1: 'New',
+    2: 'Running',
+    3: 'Done',
+    99: 'Error',
+  };
+
+  paggingSubscription: Subscription;
+
+  isCollapsedFilter: boolean = false;
+  closeModalResult = '';
+  @ViewChild('modalCreateFeatureSet', { static: true }) modalCreateFeatureSet: ElementRef;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+  @ViewChild('formFilter') formFilter: NgForm;
+  featureSets: FeatureSetModel[] = [];
+  /** Thời gian hiện tại để tính khoảng thời gian khi không có end time. Dạng unix mili giây */
+  currentDateUnix: number;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+
+  //các biến của modal tạo feature
+  modalDatasets: DatasetModel[];
+  modalMethods: MethodModel[];
+  modalFeatureSetParams: FeatureSetParamModel[];
+  modalSelectedDatasetId: string = null;
+  modalSelectedMethodId: string = null;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    private featureSetService: FeatureSetService,
+    private paggingService: PaggingService,
+    private datasetService: DatasetService,
+    private metaService: MetaService,
+    private utilService: UtilService
+  ) { }
+
+  ngOnInit(): void {
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+
+  /**xử lý khi có thay đổi lựa chọn trong danh sách dataset của modal tạo feature set */
+  onChangeModalDataset() {
+    this.modalMethods = null;
+    this.modalFeatureSetParams = null;
+    const projectId = this.route.snapshot.params['idProject'];
+
+    const methodParam = new MethodSearchParamModel();
+    methodParam.projectId = projectId;
+    this.metaService.requestSearchMethod(null, methodParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.modalMethods = resultPagging.results;
+      });
+  }
+
+  /**xử lý khi có thay đổi lựa chọn trong danh sách method của modal tạo feature set */
+  onChangeModalMethod() {
+    this.modalFeatureSetParams = null;
+
+    const featureSetParamParam = new FeatureSetParamSearchParamModel();
+    featureSetParamParam.methodId = '00007';//TODO lấy từ kết quả của method
+    this.metaService.requestSearchFeatureSetParam(null, featureSetParamParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.modalFeatureSetParams = resultPagging.results;
+      });
+  }
+
+  openModalCreateFeatureSet() {
+    //reset modal list value
+    this.modalDatasets = null;
+    this.modalMethods = null;
+    this.modalFeatureSetParams = null;
+
+    const projectId = this.route.snapshot.params['idProject'];
+    const datasetParam = new DatasetSearchParamModel();
+    datasetParam.stage = 7;//trạng thái đã chạy xong
+    datasetParam.projectId = projectId;
+    const pagging = new PaggingModel(1);
+    pagging.rowPerPage = 1000;//số to để load hết danh sách dataset
+
+    this.datasetService.requestSearch(pagging, datasetParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.modalDatasets = resultPagging.results;
+      });
+
+    this.modalService.open(this.modalCreateFeatureSet, { 'size': 'lg' })
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        });
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  onExport() {
+    let searchParam = new FeatureSetSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+    searchParam.projectId = this.route.snapshot.params['idProject'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.featureSetService.requestSearchExport(searchParam)
+      .subscribe((result: string) => {
+        let filename = 'export' + this.utilService.dateToStringSimple(new Date(), 'yyyy-mm-dd_hh-mi-ss') + '.csv';
+        this.utilService.saveFile(result, filename);
+      });
+  }
+
+  /** 
+   * Xử lý ấn nút tìm kiếm 
+   */
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new FeatureSetSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.projectId = this.route.snapshot.params['idProject'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.featureSetService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.featureSets = resultPagging.results;
+      });
+  }
+
+  onManageFeatureSet(id: number) {
+    this.router.navigate(['project', this.route.snapshot.params['idProject'], 'feature-set', id]);
+  }
+
+  onDeleteFeatureSet(id: number) {
+    const featureSet = new FeatureSetModel();
+    featureSet.project.id = this.route.snapshot.params['idProject'];
+    featureSet.id = id;
+
+    this.featureSetService.requestDelete(featureSet)
+      .subscribe(f => {
+        console.log('sau khi xóa ' + f.id);
+        this.onSearch(null);//tìm kiếm lại trang đầu
+      });
+  }
+
+  onCreateFeatureSet(form: NgForm) {
+    const featureSet = new FeatureSetModel();
+    featureSet.project.id = this.route.snapshot.params['idProject'];
+    featureSet.dataset.id = form.value.datasetId;
+    featureSet.method.methodId = form.value.methodId;
+
+    for (let key of Object.keys(form.value.params)) {
+      let paramRun = new FeatureSetParamRunModel();
+      paramRun.paramValue = form.value.params[key];
+      paramRun.featureSetParameter.paramId = key;
+      featureSet.parameterRuns.push(paramRun);
+    }
+
+    this.featureSetService.requestCreate(featureSet)
+      .subscribe(newFeatureSet => {
+        console.log(newFeatureSet);
+        //TODO hiển thị thông báo tạo thành công và id feature mới tạo. Có thể có nút manage trong thông báo
+        //TODO đóng modal
+        this.onSearch(null);//tìm kiếm lại trang đầu
+      });
+  }
+}

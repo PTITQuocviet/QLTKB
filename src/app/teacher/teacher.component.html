@@ -1,0 +1,163 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Thông Tin Thời Khóa Biểu</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+            <div>
+                <button class="btn btn-sm shadow-none btn-secondary m-1" (click)="openModalCreate()"> Thêm môn
+                    học</button>
+            </div>
+        </div>
+
+        <div id="content" class="d-flex flex-row">
+            <div class="search-result">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã MH</th>
+                                <th>Tên MH</th>
+                                <th>NMH</th>
+                                <th>STC</th>
+                                <th>Thứ</th>
+                                <th>Tiết BD</th>
+                                <th>Tiết KT</th>
+                                <th>Phòng</th>
+                                <!-- <th>Điểm danh</th> -->
+                                <th>Quản lý sinh viên</th>
+                                <th>Sửa môn học</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let subject of subjects">
+                                <td> {{subject.subjectCode}}</td>
+                                <td> {{subject.subjectName}}</td>
+                                <td> {{subject.groupCode}}</td>
+                                <td> {{subject.credit}}</td>
+                                <td> {{subject.dayInWeek}}</td>
+                                <td> {{subject.startTime}}</td>
+                                <td> {{subject.endTime}}</td>
+                                <td> {{subject.room}}</td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm" (click)="onManageStudent(subject.subjectCode)">
+                                        <img src=" ./assets/icon/outlined/editor/edit.svg"
+                                            class="icon-sm icon-secondary">
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm" (click)="onManageEdit(subject)">
+                                       Sua mon hoc
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /#page-content-wrapper -->
+
+
+<ng-template #modalCreate let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Thêm môn học mới</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div>
+                <form #formCreate="ngForm">
+                    <div class="form-group">
+                        <div>
+                            <label for="" class="text-title">Mã môn học </label>
+                            <input class="form-control" ngModel name="subjectCode">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Tên môn học</label>
+                            <input class="form-control" ngModel name="subjectName">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Nhóm môn học </label>
+                            <input class="form-control" ngModel name="groupCode">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Số tín chỉ </label>
+                            <input class="form-control" ngModel name="credit">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Học phí </label>
+                            <input class="form-control" ngModel name="fee">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="mr-auto">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onCreate(formCreate)">Lưu</button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-secondary" (click)=" modal1.dismiss('close')">
+                Hủy
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #modalEdit let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Sửa môn học </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div>
+                <form #formCreate="ngForm">
+                    <div class="form-group">
+                        <div>
+                            <label for="" class="text-title">Mã môn học </label>
+                            <input class="form-control" [ngModel]="editSubject.subjectCode" name="subjectCode">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Tên môn học</label>
+                            <input class="form-control" [ngModel]="editSubject.subjectName" name="subjectName">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Nhóm môn học </label>
+                            <input class="form-control" [ngModel]="editSubject.groupCode" name="groupCode">
+                        </div>
+                        <div>
+                            <label for="" class="text-title">Số tín chỉ </label>
+                            <input class="form-control" [ngModel]="editSubject.credit" name="credit">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="mr-auto">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onEdit(formCreate)">Lưu</button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-secondary" (click)=" modal1.dismiss('close')">
+                Hủy
+            </button>
+        </div>
+    </div>
+</ng-template>

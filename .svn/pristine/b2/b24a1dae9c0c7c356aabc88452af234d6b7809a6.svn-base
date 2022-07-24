@@ -1,0 +1,30 @@
+export class ModelSearchParamModel {
+
+    projectId: string;
+
+    datasetId: string;
+    featureSetId: string;
+    //ensemble
+    status: number;
+    createdUser: string;//username
+    createdTimeFrom: number;
+    createdTimeTo: number;
+    
+    constructor() {
+    }
+  
+    /** set giá trị từ form value */
+    build(formValue: {}): ModelSearchParamModel {
+      const searchParam = new ModelSearchParamModel();
+      if (!formValue) {
+        return searchParam;
+      }
+  
+      // for (const [key, value] of Object.entries(searchParam)) { }
+      for (let key in formValue) {
+        searchParam[key] = formValue[key];
+      }
+  
+      return searchParam;
+    }
+  }

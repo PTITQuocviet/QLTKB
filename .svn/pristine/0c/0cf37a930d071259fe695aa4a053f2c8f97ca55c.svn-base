@@ -1,0 +1,251 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="m-2">
+            <div class="d-flex flex-row">
+                <div class="mr-auto d-flex">
+                    <h2>Manage model</h2>
+                    <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                        style="margin: 0.8rem">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" (click)="onCreateModel()">
+                        New model
+                        <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-row">
+                <div class='mr-auto'></div>
+                <div>
+                    <button *ngIf="!isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Collapse
+                        <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Expand
+                        <img src="./assets/icon/outlined/directional/arrow-left.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div id="content" class="row">
+            <div [ngClass]="{'col-12' : isCollapsedFilter, 'col-9': !isCollapsedFilter}">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Model</th>
+                                <th>Dataset</th>
+                                <th>Feature set</th>
+                                <th>Method</th>
+                                <th>Algorithm code</th>
+                                <th>Time</th>
+                                <th>Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let model of models; let i = index">
+                                <td>
+                                    <div class="text-muted">{{minSTT + i}}</div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">{{model.id}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">{{model.dataset.id}}</div>
+                                        <div class="color-primary">{{model.dataset.name}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">{{model.featureSet.id}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">{{model.model}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span class="badge badge-secondary">{{model.model}}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">
+                                            <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                                class="icon-xs icon-muted">
+                                            {{(model.endTime - model.startTime) | interval}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div>
+                                            {{model.status}}
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="text-muted mr-1">Create by </div>
+                                            <b class="text-title">{{model.createdUser}}</b>
+                                        </div>
+                                        <div class="text-muted">{{model.startTime | date:'dd/MM/yyyy hh:mm:ss'}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button class="btn shadow-none btn-sm">
+                                            <img src=" ./assets/icon/outlined/editor/copy.svg"
+                                                class="icon-md icon-secondary mr-4">
+                                            <img src=" ./assets/icon/outlined/editor/delete.svg"
+                                                class="icon-md icon-danger">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <div [attr.hidden]="isCollapsedFilter ? '' : null" class="col-3">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group" (keydown.enter)="onSearch(null)">
+                            <div>
+                                <label for="">Dataset</label>
+                                <select class="form-control" ngModel name="datasetId">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1">12342 - dataset 1</option>
+                                    <option value="2">233423 - dataset 2</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Feature set</label>
+                                <select class="form-control" ngModel name="featureSetId">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1">12342 - feature set 1</option>
+                                    <option value="2">233423 - feature set 2</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Ensemble method</label>
+                                <select class="form-control" ngModel name="ensembleMethod">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="single">Single</option>
+                                    <option value="bagging">Bagging Ensemble</option>
+                                    <option value="boosting">Boosting Ensemble</option>
+                                    <option value="stacking">Stacking Ensemble</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1">Fail</option>
+                                    <option value="2">Completed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created user</label>
+                                <select class="form-control" ngModel name="userId">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1">ToanLH4</option>
+                                    <option value="2">AnLH6</option>
+                                    <option value="3">DungNDT</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created from</label>
+                                <div class="input-group">
+                                    <input id="createdTimeFrom" class="form-control" ngModel name="createdTimeFrom"
+                                        placeholder="yyyy-mm-dd" ngbDatepicker #createdTimeFrom="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm shadow-none btn-outline-secondary calendar"
+                                            (click)="createdTimeFrom.toggle()" type="button">
+                                            <img src="./assets/icon/outlined/application/calendar.svg" alt="Choose">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="">Created to</label>
+                                <div class="input-group">
+                                    <input id="createdTimeTo" class="form-control" ngModel name="createdTimeTo"
+                                        placeholder="yyyy-mm-dd" ngbDatepicker #createdTimeTo="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm shadow-none btn-outline-secondary calendar"
+                                            (click)="createdTimeTo.toggle()" type="button">
+                                            <img src="./assets/icon/outlined/application/calendar.svg" alt="Choose">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-sm shadow-none btn-primary m-1" (click)="onSearch(null)">
+                        Search
+                        <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                    </button>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="onClearFilterForm()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalUploadItemRule let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update new item rule</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Name your item rule<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="itemRuleName">
+                </div>
+                <div>
+                    <label for="">Choose your item rule source<span style="color: red;"> *</span></label>
+                    <!-- <input class="form-control" required ngModel name="mlType"> -->
+                    <select class="form-control" required ngModel name="mlType">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option value="1" selected>Rule source 01</option>
+                        <option value="2">Rule source 02</option>
+                        <option value="3">Rule source 03</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="">Description</label>
+                    <textarea class="form-control" ngModel name="description" rows="3" style="resize: none;"></textarea>
+                </div>
+                <div>
+                    <label for="">Tag</label>
+                    <input class="form-control" ngModel name="tag">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-primary" (click)="onSaveModel(formCreate)">Save</button>
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal.close('create')">Save</button> -->
+    </div>
+</ng-template>

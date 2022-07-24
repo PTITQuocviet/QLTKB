@@ -1,0 +1,12 @@
+import { ModelParamModel } from "./model-param.model";
+
+export class ModelParamRunModel {
+    
+    paramValue: string;
+    modelParamModel: ModelParamModel;
+    
+    constructor() {
+        this.modelParamModel = new ModelParamModel();
+    }
+
+}

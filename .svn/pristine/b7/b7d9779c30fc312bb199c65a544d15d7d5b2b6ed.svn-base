@@ -1,0 +1,340 @@
+/* css cho date time picker */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+/* @import '~open-iconic/font/css/open-iconic-bootstrap.css'; */
+
+
+/* You can add global styles to this file, and also import other style files */
+body {
+  overflow-x: hidden;
+}
+
+.table-active {
+  background: #F6F6F6;
+}
+
+/**color*/
+.color-primary {
+  /* Primary/Main Color */
+  color: #0043A5 !important;
+}
+.color-text {  
+  color: #034dbd !important;
+}
+.color-notification {  
+  color: #00c0c0;  
+}
+
+/**text*/
+.text-primary {
+  /* Text Colors/Primary Text */
+  color: #595959 !important;
+}
+.text-secondary {
+  /* Secondary/Main Color */
+  color: #00CCD6 !important;
+}
+.text-title {
+  /* Text Colors/Title */
+  color: #262626 !important;
+}
+.text-muted {
+  /* Text Colors/Body Text */
+  color: #8C8C8C !important;
+}
+.text-success {
+  /* Alert Success Color/Success Color */
+  color: #2EB553 !important;
+}
+.text-danger {
+  /* Alert Error Color/Error Color */
+  color: #FF4D4F !important;
+}
+.text-warning {
+  /* Alert Warning Color/Warning Color */
+  color: #FA8C16 !important;
+}
+
+/* badge */
+.badge-primary {
+  /* Primary/Main Color */
+  background-color: #0043A5;
+}
+.badge-secondary {
+  /* Secondary/Background */
+  background-color: #EEFCFD;
+  /* Secondary/Main Color */
+  color: #00CCD6;
+}
+.badge-warning {
+  /* Alert Warning Color/Warning Bacground */
+  background: #FFF7E6;
+  /* Alert Warning Color/Warning Color */
+  color: #FA8C16;
+}
+.badge-success {
+  /* Alert Success Color/Success Background */
+  background: #EBFAEF;
+  /* Alert Success Color/Success Color */
+  color: #2EB553;
+}
+
+/**table*/
+.table-border {
+  border: 1px solid #E8E8E8;
+  border-radius: 8px;
+  width: inherit;
+  /* có 2 cách */
+  display: inline-block;
+  /* width:fit-content;
+  height:fit-content; */
+}
+table {
+  background-color: white;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+table > thead {
+  vertical-align: bottom;
+}
+table th {
+  background-color: #F6F6F6;
+  vertical-align: middle;
+  padding: .5rem .5rem;
+  box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+table td {
+  border-top: 1px solid #E8E8E8;
+  vertical-align: middle;
+  padding: .5rem .5rem;
+  box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+table > tbody.no-line td {
+  /* không đường kẻ */
+  border-width: 0px;
+  vertical-align: middle;
+  padding: .5rem .5rem;
+  box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+table > tbody {
+  vertical-align: inherit;
+}
+table > thead th:first-child {
+  border-top-left-radius: 8px;
+}
+table > thead th:last-child {
+  border-top-right-radius: 8px;
+}
+/* .table td {
+  vertical-align: middle;
+} */
+/*header giữ nguyên. https://stackoverflow.com/questions/21168521/table-fixed-header-and-scrollable-body*/
+.table-scroll {
+  overflow: auto;
+}
+.table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/**button*/
+/* .btn:focus {
+  outline: none;
+  box-shadow: none !important;
+} */
+.btn-secondary {
+  border: 0;
+  color: white;
+  /* Secondary/Main Color */
+  background-color: #00CCD6;
+}
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
+  border: 0;
+  color: white;
+  /* Không tìm thấy Secondary/Main Color hover*/
+  background-color: #00c0c0;
+}
+
+.btn-info {
+  border: 0;
+  color: white;
+  /* Alert Info Color/Info Hover */
+  background-color: #69C0FF;
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info:visited, .btn-info:link, .btn-info:active:focus {
+  border: 0;
+  color: white;
+  /* Alert Info Color/Info Color */
+  background-color: #1890FF;
+}
+
+.btn-primary {
+  border: 0;
+  color: white;
+  /* Không tìm thấy Primary/Main Color hover */
+  background-color: #0b54c0;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  border: 0;
+  color: white;
+  /* Primary/Main Color */
+  background-color: #0043A5;
+}
+
+.btn-success, .btn-success:hover, .btn-success:focus, .btn-success:active {
+  border: 0;
+  color: white;
+  /* Alert Success Color/Success Pressed */
+  background-color: #039732;
+}
+
+.btn-muted, .btn-muted:hover, .btn-muted:focus, .btn-muted:active {
+  border: 0;
+  color: white;
+  /* Text Colors/Subtitle */
+  background-color: #B8B8B8;
+}
+
+.btn-warning {
+  border: 0;
+  color: white;
+  /* Alert Warning Color/Warning Color */
+  background-color: #FA8C16;
+}
+.btn-warning, .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+  border: 0;
+  color: white;
+  /* Không tìm thấy Alert Warning Color/Warning Color hover */
+  background-color: #e47d0f;
+}
+
+/** icon, các icon svg bình thường */
+.icon-xs {
+  height: 12px;
+}
+.icon-sm {
+  height: 16px;
+}
+.icon-md {
+  height: 20px;
+}
+.icon-lg {
+  height: 24px;
+}
+
+/** màu các icon, cá icon mặc định là màu đen. Web để đổi màu icon từ đen thành màu khác: https://codepen.io/sosuke/pen/Pjoqqp */
+.icon-secondary {
+  /* #00CCD6 */
+  filter: invert(73%) sepia(46%) saturate(4220%) hue-rotate(135deg) brightness(94%) contrast(101%);
+}
+.icon-muted {
+  /* #8C8C8C */
+  filter: invert(84%) sepia(7%) saturate(8%) hue-rotate(39deg) brightness(89%) contrast(87%);
+}
+.icon-info {
+  /* #1890FF */
+  filter: invert(40%) sepia(49%) saturate(2395%) hue-rotate(193deg) brightness(102%) contrast(104%);
+}
+.icon-success {
+  /* #2EB553 */
+  filter: invert(48%) sepia(99%) saturate(395%) hue-rotate(84deg) brightness(101%) contrast(78%);
+}
+.icon-danger {
+  /* #FF4D4F */
+  filter: invert(27%) sepia(43%) saturate(1408%) hue-rotate(318deg) brightness(151%) contrast(109%);
+}
+.icon-warning {
+  /* #FA8C16 */
+  filter: invert(54%) sepia(96%) saturate(923%) hue-rotate(350deg) brightness(100%) contrast(97%);
+}
+.icon-white {
+  filter: invert(1);
+}
+.icon-black {
+  filter: brightness(0) saturate(100%);
+}
+
+
+/** khung nhập thông tin tìm kiếm, chiều ngang và chiều dọc*/
+.filter-panel{
+  /* Auto layout */
+  padding: 16px;
+
+  /* Background Colors/Grey 1 */
+  background: #FAFAFA;
+
+  /* Background Colors/Grey 3 */
+  border: 1px solid #E8E8E8;
+  box-sizing: border-box;
+  border-radius: 5px;
+  
+  /* Inside auto layout */
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  /* margin: 0px 16px; */
+}
+
+/* các tab chuyển trang */
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  /* border-bottom: 1px solid #dee2e6; */
+}
+.tab-bar-item {
+  display: block;
+  padding: .5rem 1rem;
+  margin-right: 0.5em;
+}
+.tab-bar .tab-bar-item {
+  margin-bottom: -1px;
+  border: 2px solid transparent;
+}
+.tab-bar .tab-bar-item.active {
+  /* color: #0043A5; */
+  background-color: #fff;
+  border: 2px solid;
+  border-color: #fff #fff #0043A5;
+}
+
+.tab-bar-item:focus a, .tab-bar-item:hover a {
+  text-decoration: none;
+}
+
+/* hình tròn để thể hiện step */
+.circle {
+  border-radius: 50%;
+  text-align: center;
+  border: 1px solid;
+  border-color: #1890FF;
+  /* có thể thêm class xác định kích thước */
+  width: 32px;
+  height: 32px;
+}
+.circle.circle-solid {
+  background-color: #1890FF;
+  color: white;
+}
+.circle.disabled {
+  border-color: #B8B8B8;
+  color: #B8B8B8;
+}
+.circle.circle-solid.disabled {
+  border-color: #B8B8B8;
+  background-color: #B8B8B8;
+  color: white;
+}
+.vertical {
+  border-left: 2px solid;
+  border-color: #1890FF;
+  margin-left: 1.5rem;
+  min-height: 2rem;
+}
+.vertical.disabled {
+  border-color: #E7E7E7;
+}

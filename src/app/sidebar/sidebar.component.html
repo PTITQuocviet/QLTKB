@@ -1,0 +1,59 @@
+<div [class.sidebar-collapsed]="sidebarCollapsed" class="bg-sidebar border-right" id="sidebar-wrapper">
+    <div class="d-flex flex-row">
+        <div class="mr-auto d-flex">
+            <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" (click)="openModalCreate()">
+                Thêm trung tâm
+            </button>
+        </div>
+    </div>
+    <div class="bg-sidebar list-group list-group-flush">
+        <div *ngFor="let sidebar of sidebars">
+            <button [ngClass]="{'menu-item-selected': sidebar.name == active}"
+                class="bg-sidebar menu-item menu-item-selected list-group-item list-group-item-action"
+                (click)="oncheck(sidebar)">
+                <span>{{sidebar.name}}</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalCreateCenter let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Thêm trung tâm mới</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="" class="text-title">Tên trung tâm </label>
+                    <input class="form-control" ngModel name="name">
+                </div>
+                <div>
+                    <label for="" class="text-title">Điah chỉ </label>
+                    <input class="form-control" ngModel name="address">
+                </div>
+                <div>
+                    <label for="" class="text-title">Chi nhánh </label>
+                    <input class="form-control" ngModel name="branch">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="mr-auto">
+            <button type="button" class="btn shadow-none btn-secondary" (click)="onCreateCenter(formCreate)">
+                Lưu
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-info shadow-none" (click)=" modal1.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+
+
+    </div>
+</ng-template>

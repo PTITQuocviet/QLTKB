@@ -1,0 +1,13 @@
+#page-content-wrapper {
+    min-width: 100vw;
+  }
+  @media (min-width: 768px) {
+    #page-content-wrapper {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+  
+  #content-header {
+    border-bottom: 1px solid #dee2e6;
+  }

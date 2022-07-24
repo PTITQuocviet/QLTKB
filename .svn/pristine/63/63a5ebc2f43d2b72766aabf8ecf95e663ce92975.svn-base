@@ -1,0 +1,90 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+import { ProjectComponent } from './project/project.component';
+import { DatasetComponent } from './dataset/dataset.component';
+import { FeatureSetComponent } from './feature-set/feature-set.component';
+import { EvaluationComponent } from './evaluation/evaluation.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HeaderComponent } from './header/header.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { ProjectService } from './project/project.service';
+import { LoginInterceptorService } from './login/login-interceptor.service';
+import { ModalSelectProjectComponent } from './project/modal-select-project/modal-select-project.component';
+import { ModalCreateProjectComponent } from './project/modal-create-project/modal-create-project.component';
+import { ModalEditProjectComponent } from './project/modal-edit-project/modal-edit-project.component';
+import { PaggingComponent } from './pagging/pagging.component';
+import { DatePickerInputComponent } from './shared/component/date-picker-input/date-picker-input.component';
+import { DatePipe } from '@angular/common';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { RoleComponent } from './role/role.component';
+import { UserComponent } from './user/user.component';
+import { SettingComponent } from './setting/setting.component';
+import { OverviewComponent } from './overview/overview.component';
+import { ItemRuleComponent } from './item-rule/item-rule.component';
+import { RawDataComponent } from './raw-data/raw-data.component';
+import { ModelComponent } from './model/model.component';
+import { DeployComponent } from './deploy/deploy.component';
+import { FeatureSetResultComponent } from './feature-set-result/feature-set-result.component';
+import { IntervalPipe } from './shared/pipe/interval.pipe';
+import {ModelYesNoComponent} from './model-Yes-No/model-yes-no.component'
+import {ModelEditComponent} from './model-Edit/model-Edit.component'
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    ProjectComponent,
+    DatasetComponent,
+    FeatureSetComponent,
+    EvaluationComponent,
+    LoadingSpinnerComponent,
+    HeaderComponent,
+    NavbarComponent,
+    SidebarComponent,
+    ModalSelectProjectComponent,
+    ModalCreateProjectComponent,
+    ModalEditProjectComponent,
+    PaggingComponent,
+    DatePickerInputComponent,
+    DashboardComponent,
+    RoleComponent,
+    UserComponent,
+    SettingComponent,
+    OverviewComponent,
+    ItemRuleComponent,
+    RawDataComponent,
+    ModelComponent,
+    DeployComponent,
+    FeatureSetResultComponent,
+    IntervalPipe,
+    ModelYesNoComponent,
+    ModelEditComponent
+  ],
+  imports: [
+    BrowserModule
+    , AppRoutingModule, HttpClientModule
+    , FormsModule, NgbModule
+    , DlDateTimeDateModule, DlDateTimePickerModule // date time picker
+  ],
+  providers: [
+    DatePipe
+    , ProjectService
+    , {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoginInterceptorService,
+      multi: true
+    }
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }

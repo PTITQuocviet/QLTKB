@@ -1,0 +1,85 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { User } from '../user/user.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  //closeModalResult = '';
+  users: User[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter project
+  delete = false;
+  closeModalResult = '';
+ // isEditProject = false;//kiểm tra modal đang xem hay đang sửa project
+    mapStatus = {
+      1: 'Active',
+      2: 'Inactive'
+    };
+// private statusName(users: User[]) {
+//   users.forEach(user => {
+//     user.status = this.mapStatus[user.status];
+//   });
+//   return users;
+// }
+   constructor(private route: ActivatedRoute, private modalService: NgbModal,) {
+    const user = new User();
+    user.username = "A";
+    user.fullname = 'Nguyễn Văn A';
+    user.status= 2;
+    user.description = 'description';
+
+    const user2 = new User();
+    user2.username = 'B';
+    user2.fullname = 'Nguyễn Văn B';
+    user2.status= 1;
+    user2.description = 'description';
+
+    const user3 = new User();
+    user3.username = 'B';
+    user3.fullname = 'Nguyễn Văn B';
+    user3.status= 2;
+    user3.description = 'description';
+
+    this.users.push(user);
+    this.users.push(user2);
+    this.users.push(user3);
+
+  }
+  @ViewChild('wrapper', { static: true }) wrapper: ElementRef;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+
+  @ViewChild('modalCreateProject', { static: true }) modalCreateProject: ElementRef;
+  @ViewChild('modalEditProject', { static: true }) modalEditProject: ElementRef;
+
+  ngOnInit(): void {
+  }
+  openDelete(){
+
+  };
+  openModalCreateProject() {
+    this.modalService.open(this.modalCreateProject, {})
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        });
+  }
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+}

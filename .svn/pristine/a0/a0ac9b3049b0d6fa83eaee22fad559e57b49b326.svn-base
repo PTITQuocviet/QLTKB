@@ -1,0 +1,88 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UserModel } from '../user/user.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { NgForm } from '@angular/forms';
+import { PaggingService } from '../pagging/pagging.service';
+import { UserService } from './user.service'
+import { Subscription } from 'rxjs';
+import { UserSearchParamModel } from "./user-search-param.model";
+import { ResultPagging } from '../shared/model/result-pagging.model';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  users: UserModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter project
+  delete = false;
+  paggingSubscription: Subscription;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentDateUnix: number;
+
+  @ViewChild('formFilter') formFilter: NgForm;
+  @ViewChild('modalEditUser', { static: true }) modalEditUser: ElementRef;
+
+  mapStatus = {
+    1: 'Active',
+    2: 'Inactive'
+  };
+  constructor(
+    private route: ActivatedRoute,
+    private paggingService: PaggingService,
+    private UserService: UserService,
+    private modalService: NgbModal,
+  ) {
+  }
+
+
+  ngOnInit(): void {
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+ 
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new UserSearchParamModel();
+    // TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.username = this.route.snapshot.params['username'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.UserService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.users = resultPagging.results;
+      });
+  }
+
+  // request xóa
+  onSubmitModalYesNo(event: { btnCode: number }, id: number) {
+    // console.log(event);
+    // console.log(id);
+    if (event.btnCode == 1) {
+      const user = new UserModel();
+      user.id = id
+      this.UserService.requestDelete(user)
+        .subscribe(u => {
+          this.onSearch(null);//tìm kiếm lại trang đầu
+        });
+    }
+  }
+  openModalEditUser(){
+    this.modalService.open(this.modalEditUser, {})
+  }
+}

@@ -1,0 +1,112 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { SidebarService } from './sidebar.service';
+
+@Component({
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.css']
+})
+export class SidebarComponent implements OnInit {
+
+  sidebarCollapsed: boolean = false;//đánh dấu ẩn hiện side bar
+  /**trạng thái selected của các phần tử sidebar. true là selected*/
+  sidebarState: {} = {
+    'dashboard': false,
+    'project': false,// /project
+    'roles': false,
+    'users': false,
+    'settings': false,
+    'overview': false,
+    'dataset': false,// /project/:prj_id/dataset
+    'item-rule': false,// /project/:prj_id/itemRule
+    'raw-data': false,
+    'feature': false,// /project/:prj_id/feature
+    'model': false,// /project/:prj_id/model
+    'evaluation': false,// /project/:prj_id/evaluation
+    'deploy': false,
+    'item_rule': false,
+  };
+
+  menuSystemCollapsed: boolean = false;//thuộc danh sách trước khi chọn project
+  menuDataCollapsed: boolean = false;//thuộc danh sách sau khi chọn project
+
+  projectId: string;//nếu là các trang khi chưa chọn project thì giá trị null. Nếu là trang sau khi chọn project thì giá trị là prj_id ở url
+
+  isMenuProject = true;//menu có 2 danh sách. Danh sách trước khi chọn project (mặc định sau khi đăng nhập) và danh sách sau khi chọn project
+
+  constructor(
+    private sidebarService: SidebarService
+    // , private route: ActivatedRoute
+    , private router: Router
+  ) { }
+
+  ngOnInit(): void {
+    this.sidebarService.sidebarCollapsed.subscribe((isCollapsed) => {
+      this.sidebarCollapsed = isCollapsed;
+    }
+    );
+
+    // NavigationEnd
+    // NavigationCancel
+    // NavigationError
+    // RoutesRecognized
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationStart))
+      .subscribe((event: NavigationStart) => {
+        console.log(event);
+
+        //thay đổi danh sách sidebar dựa vào url
+        if (event.url === '/project' || event.url === '/user') {
+          this.isMenuProject = true;
+          this.projectId = null;
+        } else {
+          this.isMenuProject = false;
+          this.projectId = event.url.match(/\/project\/(?<prj_id>[\w\d]+)\/.*/).groups['prj_id'];
+        }
+        this.setSidebarState(event.url, this.sidebarState);
+      });
+  }
+
+  /** đặt lại giá trị khởi tạo */
+  resetSidebarState() {
+    for (const [key, value] of Object.entries(this.sidebarState)) {
+      this.sidebarState[key] = false;
+    }
+  }
+
+  /**
+   * Thay đổi trạng thái selected item trong sidebar dựa vào url.
+   * @param url đường dẫn url
+   * @param sidebarState lưu thông tin sidebar state
+   */
+  setSidebarState(url: string, sidebarState: {}) {
+    this.resetSidebarState();
+    if (url === '/project') {
+      sidebarState['project'] = true;
+      return;
+    }
+    if (/\/project\/[\w\d]+\/dataset.*/.test(url)) {
+      sidebarState['dataset'] = true;
+      return;
+    }
+    if (/\/project\/[\w\d]+\/item-Rule.*/.test(url)) {
+      sidebarState['item-rule'] = true;
+      return;
+    }
+    if (/\/project\/[\w\d]+\/feature.*/.test(url)) {
+      sidebarState['feature'] = true;
+      return;
+    }
+    if (/\/project\/[\w\d]+\/model.*/.test(url)) {
+      sidebarState['model'] = true;
+      return;
+    }
+    if (/\/project\/[\w\d]+\/evaluation.*/.test(url)) {
+      sidebarState['evaluation'] = true;
+      return;
+    }
+    //TODO xử lý thêm url
+  }
+}

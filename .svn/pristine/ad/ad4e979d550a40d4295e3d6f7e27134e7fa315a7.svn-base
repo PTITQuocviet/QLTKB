@@ -1,0 +1,12 @@
+export class ModelModel {
+    stt: string;
+    idmodel: string;
+    iddataset: string;
+    idFeature: string;
+    method: string;
+    algorithmCode: string;
+    time_model: string;
+    info_process: string;
+    created_by: string;
+    createdTime: string;   
+  }

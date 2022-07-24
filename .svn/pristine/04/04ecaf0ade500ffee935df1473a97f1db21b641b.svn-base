@@ -1,0 +1,8 @@
+<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <li class="nav-item dropdown" appDropdown>
+        <a class="nav-link dropdown-toggle" role="button">
+            ToanLH4
+        </a>
+    </li>
+    <li><a class="dropdown-item" (click)="onLogout()" style="cursor: pointer;">Đăng xuất</a></li>
+</ul>

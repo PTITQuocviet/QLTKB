@@ -1,0 +1,34 @@
+export class FeatureSetSearchParamModel {
+
+  projectId: string;
+  featureSetId: string;
+  datasetId: string;
+  datasetName: string;
+  status: string;
+  createdUser: string;//username
+  createdTimeFrom: number;
+  createdTimeTo: number;
+
+  nNeightbours: number;
+  discreteFeature: number;
+  copy: number;
+  randomState: number;
+
+  constructor() {
+  }
+
+  /** set giá trị từ form value */
+  build(formValue: {}): FeatureSetSearchParamModel {
+    const searchParam = new FeatureSetSearchParamModel();
+    if (!formValue) {
+      return searchParam;
+    }
+
+    // for (const [key, value] of Object.entries(searchParam)) { }
+    for (let key in formValue) {
+      searchParam[key] = formValue[key];
+    }
+
+    return searchParam;
+  }
+}

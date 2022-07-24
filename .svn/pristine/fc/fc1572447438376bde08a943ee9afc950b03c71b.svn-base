@@ -1,0 +1,99 @@
+<div [class.sidebar-collapsed]="sidebarCollapsed" class="bg-sidebar border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">
+        <img id="logo" src="./assets/icon/logo/Logo-white.svg" alt="DSToolkit">
+    </div>
+    <div class="bg-sidebar list-group list-group-flush">
+        <div *ngIf="isMenuProject">
+            <a href="/dashboard" [ngClass]="{'menu-item-selected': sidebarState['dashboard']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm" src="./assets/icon/outlined/data/bar-chart.svg" alt="">
+                <span>Dashboard</span>
+            </a>
+            <a href="/project" [ngClass]="{'menu-item-selected': sidebarState['project']}"
+                class="bg-sidebar menu-item menu-item-selected list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-white" src="./assets/icon/outlined/application/appstore.svg" alt="">
+                <span>Manage Project</span>
+            </a>
+
+            <a class="bg-sidebar menu-item list-group-item list-group-item-action" (click)="collapseSystem.toggle()">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/setting.svg" alt="">
+                <span>System</span>
+            </a>
+            <div #collapseSystem="ngbCollapse" [(ngbCollapse)]="menuSystemCollapsed">
+                <a href="/role" [ngClass]="{'menu-item-selected': sidebarState['roles']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/appstore.svg" alt="">
+                    <span>Roles</span>
+                </a>
+                <a href="/user" [ngClass]="{'menu-item-selected': sidebarState['users']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/user.svg" alt="">
+                    <span>Users</span>
+                </a>
+                <a href="/setting" [ngClass]="{'menu-item-selected': sidebarState['settings']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/setting.svg" alt="">
+                    <span>Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <div *ngIf="!isMenuProject">
+            <!-- dataset -->
+            <a [routerLink]="['/project', projectId, 'overview']"
+                [ngClass]="{'menu-item-selected': sidebarState['overview']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/data/bar-chart.svg" alt="">
+                <span>Overview</span>
+            </a>
+            <a class="bg-sidebar menu-item list-group-item list-group-item-action" (click)="collapseData.toggle()">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/table.svg" alt="">
+                <span>Data</span>
+            </a>
+            <div #collapseData="ngbCollapse" [(ngbCollapse)]="menuDataCollapsed">
+                <a [routerLink]="['/project', projectId, 'dataset']"
+                    [ngClass]="{'menu-item-selected': sidebarState['dataset']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/appstore.svg" alt="">
+                    <span>Dataset</span>
+                </a>
+                <a [routerLink]="['/project', projectId, 'itemRule']"
+                    [ngClass]="{'menu-item-selected': sidebarState['item-rule']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/directional/pic-center.svg" alt="">
+                    <span>Item rule</span>
+                </a>
+                <a [routerLink]="['/project', projectId, 'rawData']"
+                    [ngClass]="{'menu-item-selected': sidebarState['raw-data']}"
+                    class="bg-sidebar menu-item sub-menu-item list-group-item list-group-item-action">
+                    <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/layout.svg" alt="">
+                    <span>Raw data</span>
+                </a>
+            </div>
+            <a [routerLink]="['/project', projectId, 'feature']"
+                [ngClass]="{'menu-item-selected': sidebarState['feature']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/compress.svg" alt="">
+                <span>Feature</span>
+            </a>
+            <a [routerLink]="['/project', projectId, 'model']" [ngClass]="{'menu-item-selected': sidebarState['model']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/usergroup-delete.svg"
+                    alt="">
+                <span>Model</span>
+            </a>
+            <a [routerLink]="['/project', projectId, 'evaluation']"
+                [ngClass]="{'menu-item-selected': sidebarState['evaluation']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/data/pie-chart.svg" alt="">
+                <span>Evaluation</span>
+            </a>
+            <a [routerLink]="['/project', projectId, 'deploy']"
+                [ngClass]="{'menu-item-selected': sidebarState['deploy']}"
+                class="bg-sidebar menu-item list-group-item list-group-item-action">
+                <img class="pr-3 icon-sm icon-muted" src="./assets/icon/outlined/application/rocket.svg" alt="">
+                <span>Deploy</span>
+            </a>
+        </div>
+    </div>
+</div>

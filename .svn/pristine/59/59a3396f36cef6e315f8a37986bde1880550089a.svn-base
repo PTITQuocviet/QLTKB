@@ -1,0 +1,18 @@
+<button class="btn shadow-none btn-sm" (click)="openDelete()" >
+    <img src="./assets/icon/outlined/editor/delete.svg" class="icon-sm icon-secondary">
+</button>
+
+
+<ng-template #modalDelete let-modal1>
+    <div class="modal-header">
+        <div class="form-group col text-center">
+            <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+            <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" data-bs-dismiss="modal" aria-label="Close" (click)="modal1.dismiss('close')">
+                Yes
+            </button>
+            <button type="submit" class="btn btn-sm shadow-none btn-secondary m-1" data-bs-dismiss="modal" aria-label="Close" (click)="modal1.dismiss('close')">
+              <i class="fas fa-times-circle"></i> No
+            </button>
+          </div>
+    </div>
+</ng-template>

@@ -1,0 +1,113 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header d-flex" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Manage User</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    New user
+                </button>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+                    Search user
+                    <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                </button>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="isCollapsedFilter=!isCollapsedFilter">
+                    Collapse
+                    <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                </button>
+            </div>
+        </div>
+        <div id="content" class="row">
+            <div [ngClass]="{'col-12' : isCollapsedFilter, 'col-9': !isCollapsedFilter}">
+                <table class="table">
+                    <tr class="table-active">
+                        <th>STT</th>
+                        <th>ID</th>
+                        <th>User Name</th>
+                        <th>Full Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Change_time</th>
+                        <th>Change_user</th>
+                        <th>Actions</th>
+                    </tr>
+                    <tr *ngFor="let user of users; let i = index">
+                        <td>{{minSTT + i}}</td>
+                        <td>{{user.id}}</td>
+                        <td class="text-muted">{{user.username}}</td>
+                        <td class="text-muted">{{user.fullname}}</td>
+                        <td>{{user.description}}</td>
+                        <td>
+                            <div [class.text-danger]="user.status === 2" [class.text-success]="user.status === 1"
+                                class="text-primary">
+                                <b> {{mapStatus[user.status]}} </b>
+                            </div>
+                        </td>
+                        <td>{{user.changeTime | date:'dd/MM/yyyy hh:mm:ss'}}</td>
+                        <td>{{user.changeUser}}</td>
+                        <td>
+                            <!-- <button class="btn shadow-none btn-sm">
+                                <img src=" ./assets/icon/outlined/editor/edit.svg" class="icon-sm icon-secondary">
+                            </button> -->
+                            <!-- Sửa user có id tương ứng -->
+                            <!-- <app-ModelEdit></app-ModelEdit> -->
+
+                            <!-- lấy giá trị id, xóa user có id cần xóa -->
+                            <app-modalyesno
+                                [message]="'Do you want to delete this model? This model cannot be modified once it is deleted'"
+                                [title]="'Are you sure?'"                            
+                                (btnCode)="onSubmitModalYesNo($event, user.id )"
+                                >
+                            </app-modalyesno>
+                        </td>
+                    </tr>
+                </table>
+                <app-pagging></app-pagging>
+            </div>
+            <div [attr.hidden]="isCollapsedFilter ? '' : null" class="col-3">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group">
+                            <div>
+                                <label for="">ID</label>
+                                <input class="form-control" ngModel name="projectId">
+                            </div>
+                            <div>
+                                <label for="">User Name</label>
+                                <input class="form-control" ngModel name="projectName">
+                            </div>
+                            <div>
+                                <label for="">Full Name</label>
+                                <input class="form-control" ngModel name="projectName">
+                            </div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option class="text-success" value="1">Active</option>
+                                    <option class="text-danger" value="2">Inactive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Description</label>
+                                <input class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /#page-content-wrapper -->

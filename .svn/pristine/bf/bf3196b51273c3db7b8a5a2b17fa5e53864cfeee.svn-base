@@ -1,0 +1,379 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Manage Project</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="openModalCreateProject()">
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    New project
+                </button>
+                <button *ngIf="!isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="isCollapsedFilter=!isCollapsedFilter">
+                    Collapse
+                    <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                </button>
+                <button *ngIf="isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="isCollapsedFilter=!isCollapsedFilter">
+                    Expand
+                    <img src="./assets/icon/outlined/directional/arrow-left.svg" class="icon-sm icon-white">
+                </button>
+            </div>
+        </div>
+
+         <div id="content" class="d-flex flex-row">
+            <div class="" style="width:100%">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Target date</th>
+                                <th>Created by</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let project of projects">
+                                <td>
+                                    <div class="text-muted">{{project.id}}</div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-primary">{{project.name}}</div>
+                                        <div>
+                                            <h5><span class="badge badge-secondary">
+                                                    {{mapMLType[project.mlType.type]}}
+                                                </span></h5>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-danger">1 day left</div>
+                                        <div class="text-muted">{{project.targetDate | date:'dd/MM/yyyy hh:mm:ss'}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div [class.text-danger]="project.status === 2"
+                                            [class.text-success]="project.status === 1" class="text-primary">
+                                            <!-- <b>{{project.statusName}}</b> -->
+                                            <b>{{mapStatus[project.status]}}</b>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="text-muted mr-1">Create by </div><b
+                                                class="text-title">{{project.createdUser}}</b>
+                                        </div>
+                                        <div class="text-muted">{{project.createdTime | date:'dd/MM/yyyy hh:mm:ss'}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm" (click)="openModalEditProject(project.id)">
+                                        <img src=" ./assets/icon/outlined/editor/edit.svg"
+                                            class="icon-sm icon-secondary">
+                                    </button>
+                                    <button class="btn shadow-none btn-sm btn-info"
+                                        (click)="onManageProject(project.id)">Manage
+                                        <img src="./assets/icon/outlined/application/select.svg"
+                                            class="icon-sm icon-white">
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <div class="filter" id="filter" [class.filter-collapsed]="isCollapsedFilter">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group" (keydown.enter)="onSearch(null)">
+                            <div>
+                                <label for="">ID</label>
+                                <input class="form-control" ngModel name="projectId">
+                            </div>
+                            <div>
+                                <label for="">Name</label>
+                                <input class="form-control" ngModel name="projectName">
+                            </div>
+                            <div>
+                                <label for="">Machine learning type</label>
+                                <select class="form-control" ngModel name="mlType">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="CLASSIFICATION">Classification</option>
+                                    <option value="REGRESSION">Regression</option>
+                                    <option value="CLUSTERING">Clustering</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created by</label>
+                                <select class="form-control" ngModel name="createdUser">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="toanlh4">toanlh4</option>
+                                    <option value="chautm">chautm</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created from</label>
+                                <div class="input-group">
+                                    <input id="createdTimeFrom" class="form-control" ngModel name="createdTimeFrom"
+                                        placeholder="yyyy-mm-dd" ngbDatepicker #createdTimeFrom="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm shadow-none btn-outline-secondary calendar"
+                                            (click)="createdTimeFrom.toggle()" type="button">
+                                            <img src="./assets/icon/outlined/application/calendar.svg" alt="Choose">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="">Created to</label>
+                                <div class="input-group">
+                                    <input id="createdTimeTo" class="form-control" ngModel name="createdTimeTo"
+                                        placeholder="yyyy-mm-dd" ngbDatepicker #createdTimeTo="ngbDatepicker">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-sm shadow-none btn-outline-secondary calendar"
+                                            (click)="createdTimeTo.toggle()" type="button">
+                                            <img src="./assets/icon/outlined/application/calendar.svg" alt="Choose">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    Spam
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    SupportSale Team
+                                </label>
+                            </div> -->
+                        </div>
+                    </form>
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="mr-auto">
+                            <button class="mr-auto d-flex" type="button"
+                                class="btn btn-sm  btn-secondary m-1" (click)="onSearch(null)">
+                                Search
+                                <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm  btn-secondary m-1" (click)="onClearFilterForm()">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalCreateProject let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">New project</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Project name<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="projectName">
+                </div>
+                <div>
+                    <label for="">Machine learning type<span style="color: red;"> *</span></label>
+                    <!-- <input class="form-control" required ngModel name="mlType"> -->
+                    <select class="form-control" required ngModel name="mlType">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option value="CLASSIFICATION" selected>Classification</option>
+                        <option value="REGRESSION">Regression</option>
+                        <option value="CLUSTERING">Clustering</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="">Description</label>
+                    <textarea class="form-control" ngModel name="description" rows="3" style="resize: none;"></textarea>
+                </div>
+                <!-- <div>
+                    <label for="">Target date new</label>
+                    <app-date-picker-input></app-date-picker-input>
+                </div> -->
+
+                <div>
+                    <label for="targetDate">Target date</label>
+                    <div class="input-group">
+                        <input id="targetDate" class="form-control" ngModel name="targetDate" placeholder="yyyy-mm-dd"
+                            ngbDatepicker #targetDate="ngbDatepicker">
+                        <div class="input-group-append">
+                            <button class="btn btn-sm shadow-none btn-outline-secondary calendar"
+                                (click)="targetDate.toggle()" type="button">
+                                <img src="./assets/icon/outlined/application/calendar.svg" alt="Choose">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="">Tag</label>
+                    <input class="form-control" ngModel name="tag">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-primary" (click)="onCreateProject(formCreate)">Save</button>
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal.close('create')">Save</button> -->
+    </div>
+</ng-template>
+
+
+<ng-template #modalEditProject let-modal2>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Quick view project</h4>
+        <button id="btnCloseModalEdit" type="button" class="close" aria-label="Close" (click)="modal2.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div style="border: solid 1px #E8E8E8;border-radius: 6px;">
+                <form #formCreate="ngForm">
+                    <table class="table form-group">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Name</th>
+                                <td [attr.hidden]="isEditProject ? '' : null">
+                                    <b class="text-muted">{{editingProject.name}}</b>
+                                </td>
+                                <td [attr.hidden]="!isEditProject ? '' : null">
+                                    <input class="form-control" required ngModel name="projectName"
+                                        [ngModel]="editingProject.name">
+                                    <input class="form-control" required ngModel name="projectId"
+                                        [ngModel]="editingProject.id" hidden="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Machine learning type</th>
+                                <td [attr.hidden]="isEditProject ? '' : null">
+                                    <div class="btn btn-sm btn-secondary">{{mapMLType[editingProject.mlType.type]}}
+                                    </div>
+                                </td>
+                                <td [attr.hidden]="!isEditProject ? '' : null">
+                                    <select class="form-control" required ngModel name="mlType"
+                                        [ngModel]="editingProject.mlType.type">
+                                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                        <option value="CLASSIFICATION">Classification</option>
+                                        <option value="REGRESSION">Regression</option>
+                                        <option value="CLUSTERING">Clustering</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Description</th>
+                                <td [attr.hidden]="isEditProject ? '' : null">
+                                    <div class="text-muted">
+                                        {{editingProject.description}}
+                                    </div>
+                                </td>
+                                <td [attr.hidden]="!isEditProject ? '' : null">
+                                    <textarea class="form-control" ngModel name="description" rows="3"
+                                        style="resize: none;" [ngModel]="editingProject.description">
+                                </textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Status</th>
+                                <td [attr.hidden]="isEditProject ? '' : null">
+                                    <div [class.text-danger]="editingProject.status === 2"
+                                        [class.text-success]="editingProject.status === 1">
+                                        {{editingProject.statusName}}
+                                    </div>
+                                </td>
+                                <td [attr.hidden]="!isEditProject ? '' : null">
+                                    <select class="form-control" required ngModel name="status"
+                                        [ngModel]="editingProject.status">
+                                        <!-- TODO dùng api lấy thông tin danh sách -->
+                                        <option value="1">Active</option>
+                                        <option value="2">Inactive</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Tag</th>
+                                <td [attr.hidden]="isEditProject ? '' : null">
+                                    <div class="btn btn-sm badge-warning">SupportSale Team</div>
+                                </td>
+                                <td [attr.hidden]="!isEditProject ? '' : null">
+                                    <input class="form-control" required ngModel name="projectName"
+                                        [ngModel]="'SupportSale Team'">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Created by</th>
+                                <td>
+                                    <b class="text-muted">{{editingProject.createdUser}}</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary">Created at</th>
+                                <td>
+                                    <div class="text-muted">{{editingProject.createdTime | date:'dd/MM/yyyy hh:mm:ss'}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="mr-auto">
+            <button type="button" class="btn btn-sm btn-secondary shadow-none" [attr.hidden]="isEditProject ? '' : null"
+                (click)="isEditProject=true">Edit
+                <img src=" ./assets/icon/outlined/editor/edit.svg" class="icon-sm icon-white">
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary shadow-none"
+                [attr.hidden]="!isEditProject ? '' : null" (click)="isEditProject=false">View
+                <img src=" ./assets/icon/outlined/application/eye.svg" class="icon-sm icon-white">
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-info shadow-none" [attr.hidden]="isEditProject ? '' : null"
+                (click)="onManageProject(editingProject.id); modal2.close('Manage project')">Manage
+                <img src="./assets/icon/outlined/application/select.svg" class="icon-sm icon-white">
+            </button>
+            <button type="button" class="btn btn-sm btn-info shadow-none" [attr.hidden]="!isEditProject ? '' : null"
+                (click)="onEditProject(formCreate)">Save change
+                <img src=" ./assets/icon/outlined/editor/edit.svg" class="icon-sm icon-white">
+            </button>
+        </div>
+    </div>
+</ng-template>

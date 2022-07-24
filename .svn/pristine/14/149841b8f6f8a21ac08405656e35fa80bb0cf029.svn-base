@@ -1,0 +1,79 @@
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { tap } from "rxjs/operators";
+import { environment } from "src/environments/environment";
+import { HttpClient } from '@angular/common/http';
+
+import { ResultPagging } from "../shared/model/result-pagging.model";
+import { PaggingModel } from "../shared/model/pagging.model";
+// import { FeatureSetModel } from "./feature-set.model";
+import { EvaluationModel } from './evaluation.model';
+// import { FeatureSetSearchParamModel } from "./feature-set-search-param.model";
+import { EvaluationSearchParamModel } from './evaluation-search-param.model';
+
+@Injectable({ providedIn: 'root' })
+export class EvaluationService {
+
+    /** chứa thông tin kết quả tìm kiếm và thông tin phân trang */
+    resultPagging = new BehaviorSubject<ResultPagging>(null);
+
+    baseURL: string;
+
+    constructor(
+        private http: HttpClient
+    ) {
+         this.baseURL = environment.baseURL + environment.apiEvaluation ;
+    }
+
+  //   request(id: string) {
+  //     //TODO kiểm tra id hợp lệ
+  //     const url = new URL(environment.baseURL + environment.apiEvaluation + '/' + id);
+
+  //     return this.http.get<EvaluationModel>(url.href);
+  // }
+
+    /** tạo request tìm kiếm  */
+    requestSearch(pagging: PaggingModel, searchParam: EvaluationSearchParamModel): Observable<ResultPagging> {
+        const url = new URL(this.baseURL.replace(':prj_id', searchParam.model));
+
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+                && key !== 'projectId'//tham số này đã được cho vào path param
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+
+        if (!pagging.currentPage) {
+            pagging.currentPage = 1;
+        }
+
+        url.searchParams.set('start', ((pagging.currentPage - 1) * pagging.rowPerPage).toString());
+        url.searchParams.set('rows', pagging.rowPerPage.toString());
+
+        return this.http.get<ResultPagging>(url.href).pipe(
+            tap(
+                resultPagging => {
+                    pagging.countRow = resultPagging.numFound;
+                    pagging.currentPage = resultPagging.start / pagging.rowPerPage + 1;
+                    this.resultPagging.next(resultPagging);//cập nhật kết quả tìm kiếm
+                }
+            )
+        )
+    }
+
+    /** Tạo request tạo */
+    // requestCreate(Evaluation: EvaluationModel) {
+    //     const url = new URL(this.baseURL.replace(':prj_id', Evaluation.model));
+
+    //     return this.http.post<EvaluationModel>(url.href, Evaluation);
+    // }
+
+    /** Tạo request xóa */
+    // requestDelete(Evaluation: EvaluationModel) {
+    //     const url = new URL(this.baseURL.replace(':prj_id', Evaluation.model) + '/' + featureSet.id);
+
+    //     return this.http.delete<EvaluationModel>(url.href);
+    // }
+}

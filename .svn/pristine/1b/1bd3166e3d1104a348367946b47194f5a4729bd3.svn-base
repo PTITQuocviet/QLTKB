@@ -1,0 +1,92 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { ModelModel } from './model.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ModelService } from './model.service';
+
+@Component({
+  selector: 'app-model',
+  templateUrl: './model.component.html',
+  styleUrls: ['./model.component.css']
+})
+export class ModelComponent implements OnInit {
+
+  models:ModelModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter
+  closeModalResult = '';
+
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+  @ViewChild('modalUploadItemRule', { static: true }) modalUploadItemRule: ElementRef;
+
+  constructor(private route: ActivatedRoute,
+      private modelService: ModelService,
+      private modalService: NgbModal,
+    ){
+    
+  }
+
+  classString:string;
+
+  ngOnInit(): void {
+    const models = new ModelModel();
+    models.stt = '1';
+    models.idmodel = '000001';
+    models.iddataset = '000345';
+    models.idFeature = '005026';
+    models.method = 'Single';
+    models.algorithmCode='adfadfa asdfa sdf adf adf';
+    models.time_model = '30 minutes';
+    models.info_process = 'Complete';    
+    models.created_by = 'FIS IS';  
+    models.createdTime = '22-01-2022'  ;
+
+    this.models.push(models);
+    console.log('this.datasets', this.models);
+
+    this.models.forEach(element => {
+      console.log('element', element);
+      if (element.info_process === 'Complete') {
+        this.classString = 'text-success'        
+      }else{
+        this.classString = 'text-danger'
+      }
+    });
+  }
+
+  /**
+   * Mở modal Upload item.
+   */
+   openModalUploadItemRule() {
+    this.modalService.open(this.modalUploadItemRule, {})
+    .result
+    .then(
+      (result) => {//Closed
+        console.log(result);
+        if (result === 'create') {//không dùng
+          console.log(this.formCreate);
+        }
+      }, (reason) => {//Dismissed
+        this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+        console.log(this.closeModalResult);
+      });
+  }  
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+   
+   onSaveModel(form: NgForm) {
+    //TODO nếu tạo lỗi thì không đóng modal
+    const model = new ModelModel();   
+    
+  }
+
+}

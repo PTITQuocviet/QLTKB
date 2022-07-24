@@ -1,0 +1,13 @@
+import { DatasetModel } from "../dataset/dataset.model";
+import { ProjectModel } from "../project/project.model";
+
+export class DataConfigModel {
+    
+    project: ProjectModel;
+    dataset: DatasetModel;
+    stage: number;
+    startTime: Date;
+    endTime: Date;
+    status: number;
+
+}

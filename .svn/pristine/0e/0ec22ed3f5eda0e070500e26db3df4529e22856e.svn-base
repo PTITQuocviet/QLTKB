@@ -1,0 +1,143 @@
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Feature set {{featureSet.id}}</h2>
+                <!-- <h2>Feature set</h2> -->
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+            <div>
+                <button disabled type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    Save change
+                </button>
+                <button disabled type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+                    Discard
+                    <img src="./assets/icon/outlined/application/download.svg" class="icon-sm icon-white">
+                </button>
+                <!-- <button type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+                    Back
+                    <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                </button> -->
+            </div>
+        </div>
+        <div *ngIf="!featureSet" id="content" class="row">
+            Không có dữ liệu
+        </div>
+        <div *ngIf="featureSet" id="content" class="row">
+            <div class="col-3">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Infomation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="text-muted">Dataset ID: {{featureSet.dataset.id}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="text-muted">Selection method: {{featureSet.method.methodName}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span *ngFor="let param of featureSet.parameterRuns"
+                                        class="badge badge-secondary mr-1">
+                                        {{param.featureSetParameter.paramCode}} = {{param.paramValue}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-7">
+                <div class="table-scroll table-border" style="height: 500px;">
+                    <table class="mb-0">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Column</th>
+                                <th>Selection value</th>
+                                <th>Ranking</th>
+                                <th>Is selected</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let featureResult of featureSet.featureSetResults; let i = index">
+                                <td>
+                                    <div class="text-muted">{{i + 1}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureResult.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureResult.value}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureResult.ranking}}</div>
+                                </td>
+                                <td>
+                                    <input type="checkbox" [ngModel]="featureResult.isSelected" />
+                                    <!-- <div *ngIf="featureResult.isSelected" class="color-primary">Selected</div>
+                                    <div *ngIf="!featureResult.isSelected" class="text-muted">Unselect</div> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <div class="text-muted"></div>
+                    <form #formFilter="ngForm">
+                        <div class="form-group">
+                            <div>
+                                <label class="text-title">Feature name</label>
+                                <input class="form-control" ngModel name="featureName">
+                            </div>
+                            <div>
+                                <label class="text-title">Ranking</label>
+                                <input class="form-control" ngModel name="ranking">
+                            </div>
+                            <div>
+                                <label class="text-title">Is selected</label>
+                                <select class="form-control" ngModel name="isSelected">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-title">Value from</label>
+                                <input class="form-control" name="valueFrom">
+                            </div>
+                            <div>
+                                <label class="text-title">Value to</label>
+                                <input class="form-control" name="valueTo">
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-sm shadow-none btn-primary m-1" (click)="onSearch()">
+                        Search
+                        <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                    </button>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="onClearFilterForm()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->

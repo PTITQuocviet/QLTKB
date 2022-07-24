@@ -1,0 +1,118 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DatasetModel } from './dataset.model';
+import { DatasetService } from './dataset.service';
+import { PaggingService } from '../pagging/pagging.service';
+import { DatasetSearchParamModel } from './dataset-search-param.model';
+import { NgForm } from '@angular/forms';
+import { PaggingModel } from '../shared/model/pagging.model';
+
+
+@Component({
+  selector: 'app-dataset',
+  templateUrl: './dataset.component.html',
+  styleUrls: ['./dataset.component.css']
+})
+export class DatasetComponent implements OnInit {
+
+  @ViewChild('formFilter') formFilter: NgForm;
+  datasets: DatasetModel[] = [];
+  /** Thời gian hiện tại để tính khoảng thời gian khi không có end time. Dạng unix mili giây */
+  currentDateUnix: number;
+  isCollapsedFilter = false;//trạng thái mở của khung filter project
+
+  constructor(private router: Router
+    , private route: ActivatedRoute
+    , private paggingService: PaggingService
+    , private datasetService: DatasetService
+  ) {}
+
+  ngOnInit(): void {
+    const projectId = this.route.snapshot.params['idProject'];//TODO khởi tạo giao diện của dataset của project có id = idProject
+    this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+
+  onSearch(pagging: PaggingModel) {
+    const projectId = this.route.snapshot.params['idProject'];
+    
+    if (!pagging) {
+      pagging = this.paggingService.pagging.getValue();
+    }
+    let searchParam = new DatasetSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+
+    if (!this.formFilter) {
+      searchParam = searchParam.build(projectId, null);
+    } else {
+      searchParam = searchParam.build(projectId, this.formFilter.form.value);
+    }
+    console.log(searchParam)
+    this.currentDateUnix = (new Date()).getTime();
+    this.datasetService.requestSearch(pagging, searchParam)
+      .subscribe(resultPagging => {
+        this.datasets = resultPagging.results;
+      });
+  }
+
+  getValueProgress(progress: number) {
+    var ret: string;
+    switch (progress) {
+      case 1: ret = 'Insert';
+        break;
+      case 2: ret = 'Clean';
+        break;
+      case 3: ret = 'Fill';
+        break;
+      case 4: ret = 'Scale';
+        break;
+      case 5: ret = 'Encode';
+        break;
+      case 6: ret = 'Split';
+        break;
+      case 7: ret = 'Balance';
+        break;
+      default: ret = 'Completed';
+
+    }
+    if (progress >= 1 && progress <= 7) {
+      ret += ` (${progress}/7)`
+    }
+    return ret;
+  }
+
+  getStatusName(progress: number) {
+    var ret: string;
+    if (progress >= 1 && progress <= 7) {
+      ret = 'Running';
+    }
+    else {
+      ret = 'Completed';
+    }
+    return ret;
+  }
+
+  getTimeProcessDataset(startTime: number, endTime: number) {
+    var ret: string;
+    var diff = endTime - startTime;
+    var minutes = Math.floor(diff / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+    var seconds = diff - minutes * 60;
+
+    var strDays = days > 0 ? `${days}` + " days " : ""
+    var strHours = hours > 0 ? `${hours - 24 * days}` + " hours " : ""
+    var strMinutes = minutes > 0 ? `${minutes - 60 * hours}` + " minutes " : ""
+    var strSeconds = (minutes === 0 && hours === 0 && days === 0) ? `${seconds}` + " seconds " : ""
+
+    ret = strDays + strHours + strMinutes + strSeconds
+    return ret;
+  }
+
+  selectAllDatasets() {
+    var checkboxes = (<HTMLInputElement>document.getElementById('select_all_checkboxes')).value;
+    console.log(checkboxes)
+  }
+
+}

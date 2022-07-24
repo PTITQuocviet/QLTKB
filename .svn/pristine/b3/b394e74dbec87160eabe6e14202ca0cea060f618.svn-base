@@ -1,0 +1,60 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { DatasetModel } from 'src/app/dataset/dataset.model';
+import { FeatureSetModel } from 'src/app/feature-set/feature-set.model';
+import { AlgorithmSearchParamModel } from 'src/app/shared/model/algorithm-search-param.model';
+import { AlgorithmModel } from 'src/app/shared/model/algorithm.model';
+import { MetaService } from 'src/app/shared/service/meta.service';
+
+@Component({
+  selector: 'app-model-create',
+  templateUrl: './model-create.component.html',
+  styleUrls: ['./model-create.component.css']
+})
+export class ModelCreateComponent implements OnInit {
+
+  step: number = 1;//có 2 bước thực hiện, bước đầu tiên là 1
+
+  //các thông tin đã chọn
+  dataset: DatasetModel;
+  featureset: FeatureSetModel;
+  ensembleMethod: string;
+  algorithms: AlgorithmModel[]
+
+  constructor(
+    private route: ActivatedRoute,
+    private metaService: MetaService
+  ) { }
+
+  ngOnInit(): void {
+  }
+
+  /**
+   * Thay đổi lựa chọn ensemble method thì phải thay đổi nội dung danh sách khác
+   */
+  onChangeEnsembleMethod(event: Event) {
+    //thay đổi danh sách algorithm
+    const param = new AlgorithmSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    param.ensembleMethod = (event.target as HTMLSelectElement).value;
+
+    this.metaService.requestSearchAlgorithms(null, param).subscribe(response => {
+      console.log(response);
+    });
+  }
+
+  /**
+   * Thay đổi bước tạo thực thể
+   * @param step số 1 hoặc 2
+   */
+  onChangeStep(step: number) {
+    this.step = step;
+  }
+
+  /**
+   * Xử lý nút train model ở bước cuối khi create model.
+   */
+  onTrainModel() {
+    console.log('TODO xử lý train model: confirm -> thông báo kết quả');
+  }
+}

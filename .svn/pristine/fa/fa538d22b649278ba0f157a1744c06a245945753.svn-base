@@ -1,0 +1,15 @@
+export class UserModel {
+    id: number;
+    username:string;
+    fullname: string;
+    status: number;
+    description: string;
+    changeTime: Date;
+    changeUser: string;
+
+    /** không có trong request và response */
+  statusName: string;
+    constructor(
+     // public username: string  //thông tin có thể lấy từ token
+    ) { }
+  }

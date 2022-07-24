@@ -1,0 +1,54 @@
+<nav class="navbar navbar-expand-lg navbar-light " style="background-color: white;">
+    <div class="p-2">
+        <button class="btn btn-light" (click)="toogleSidebar($event)" style="background-color: white;">
+            <img src="./assets/svg/sidebar/menu-fold.svg" alt="<">
+        </button>
+    </div>
+    <div class="p-2">
+        <button *ngIf="!isManageProjectPage" (click)="backProject()" class="btn btn-light"
+            style="background-color: white;">
+            Back
+        </button>
+    </div>
+    <div class="p-2">
+        <button hidden *ngIf="!isManageProjectPage" type="button" class="btn  new-project"> + New Project</button>
+    </div>
+    <div class="p-2">
+        <div *ngIf="!isManageProjectPage" ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle (click)="onSearch()">
+                <img src="./assets/svg/sidebar/churn-banking.svg" alt=""> Churn Banking version</button>
+            <div ngbDropdownMenu>
+                <input *ngIf="flag === true" ngbDropdownItem type="text" placeholder="Search.." id="myInput"
+                    (filterChange)="handleFilter($event)">
+                <div>
+                    <div class="version" *ngFor="let project of projects ">
+                        <button ngbDropdownItem>{{project.id}} - {{project.name}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ml-auto p-2">
+        <button class="btn-notice">
+            <img class="ring" src="./assets/svg/sidebar/ring.svg">
+
+            <div class="notice" style="background: #00CCD6; width: 15px; height: 15px; "></div>
+        </button>
+        <div class="btn-group" ngbDropdown role="group">
+            <img class="person" src="./assets/svg/sidebar/person.svg" alt="">
+            <button class="btn " ngbDropdownToggle> {{getUser()}} </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+
+                <button ngbDropdownItem><img id="img-dropdown-item" src="./assets/icon/outlined/application/admin.svg"
+                        alt="">
+                    My profile</button>
+                <button ngbDropdownItem><img id="img-dropdown-item" src="./assets/icon/outlined/application/setting.svg"
+                        alt="">Setting</button>
+                <!-- <button ngbDropdownItem><img id="img-dropdown-item" src="./assets/icon/outlined/suggested/help.svg"
+                            alt="">Help</button> -->
+                <button ngbDropdownItem (click)="onLogout()"><img id="img-dropdown-item"
+                        src="./assets/icon/outlined/application/log-out.svg" alt="">Log Out</button>
+            </div>
+        </div>
+    </div>
+</nav>

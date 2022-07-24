@@ -1,0 +1,8 @@
+
+export class MethodModel {
+
+    methodId: string;
+    methodName: string;
+    methodCode: string;
+    
+}

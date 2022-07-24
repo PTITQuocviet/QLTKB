@@ -1,0 +1,182 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { DatasetSearchParamModel } from 'src/app/dataset/dataset-search-param.model';
+import { DatasetModel } from 'src/app/dataset/dataset.model';
+import { DatasetService } from 'src/app/dataset/dataset.service';
+import { FeatureSetSearchParamModel } from 'src/app/feature-set/feature-set-search-param.model';
+import { FeatureSetModel } from 'src/app/feature-set/feature-set.model';
+import { FeatureSetService } from 'src/app/feature-set/feature-set.service';
+import { AlgorithmParamModel } from 'src/app/shared/model/algorithm-param.model';
+import { AlgorithmSearchParamModel } from 'src/app/shared/model/algorithm-search-param.model';
+import { AlgorithmModel } from 'src/app/shared/model/algorithm.model';
+import { ModelParamSearchParamModel } from 'src/app/shared/model/model-param-search-param.model';
+import { MetaService } from 'src/app/shared/service/meta.service';
+import { ModelModel } from '../model.model';
+
+@Component({
+  selector: 'app-model-create',
+  templateUrl: './model-create.component.html',
+  styleUrls: ['./model-create.component.css']
+})
+export class ModelCreateComponent implements OnInit {
+
+  mapEnsembleMethod: { [key: string]: string } = {
+    'single': 'Single',
+    'bagging': 'Bagging Ensemble',
+    'boosting': 'Boosting Ensemble',
+    'stacking': 'Stacking Ensemble'
+  };
+
+  @ViewChild('formCreate1') formCreate1: NgForm;
+
+  step: number = 1;//có 2 bước thực hiện, bước đầu tiên là 1
+  isValidStep1 = false;//kiểm tra trạng thái hoàn thành nhập bước 1. true là hoàn thành và có thể sang bước 2
+  isValidStep2 = false;//kiểm tra trạng thái hoàn thành nhập bước 2
+
+  //danh sách lựa chọn
+  datasets: DatasetModel[];
+  featureSets: FeatureSetModel[];
+
+  //model cần tạo
+  newModel: ModelModel;
+
+  //các thông tin đã chọn step 1
+  selectedEnsembleMethod: string;
+  selectedAlgorithmIds: string[] = [];
+  selectedDataset: DatasetModel;
+  selectedFeatureSet: FeatureSetModel;
+  selectedAlgorithms: AlgorithmParamModel[];
+
+  //các thông tin đã chọn step 2
+  selectedAlgorithmId: string;//lựa chọn alg để sửa tham số
+
+  algorithms: AlgorithmModel[];//danh sách thuật toán sau khi chọn ensemble method
+
+  constructor(
+    private route: ActivatedRoute,
+    private metaService: MetaService,
+    private datasetService: DatasetService,
+    private featureSetService: FeatureSetService
+  ) { }
+
+  ngOnInit(): void {
+    this.loadListDataset();
+    this.loadListFeatureSet();
+  }
+
+  //step 1
+  /**
+   * Thay đổi lựa chọn ensemble method thì phải thay đổi nội dung danh sách khác
+   */
+  onChangeEnsembleMethod(event: Event) {
+    //thay đổi danh sách algorithm
+    const param = new AlgorithmSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    param.ensembleMethod = (event.target as HTMLSelectElement).value;
+    this.selectedEnsembleMethod = param.ensembleMethod;
+    this.metaService.requestSearchAlgorithms(null, param).subscribe(response => {
+      this.algorithms = response.results;
+    });
+  }
+
+  onChangeDataset(event: Event) {
+    const datasetId = (event.target as HTMLSelectElement).value;
+    //set giá trị cho selected dataset 
+
+    for (let dataset of this.datasets) {
+      if (dataset.id === datasetId) {
+        this.selectedDataset = dataset;
+        break;
+      }
+    }
+  }
+
+  onChangeFeatureSet(event: Event) {
+    const featureSetId = (event.target as HTMLSelectElement).value;
+    //set giá trị cho selected feature set
+    for (let fs of this.featureSets) {
+      if (fs.id === featureSetId) {
+        this.selectedFeatureSet = fs;
+        break;
+      }
+    }
+  }
+
+  /** Load danh sachs dataset trong step 1. */
+  loadListDataset() {
+    const param = new DatasetSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    //TODO thêm tham số tìm kiếm cho DatasetSearchParamModel: feature set id
+    if (this.formCreate1) {//khi init thì chưa tạo ra form
+      param.featureSetId = this.formCreate1.form.value.featureSetId;
+    }
+    this.datasetService.requestSearch(null, param).subscribe(response => {
+      this.datasets = response.results;
+    });
+  }
+
+  /** Load danh sachs feature set trong step 1 */
+  loadListFeatureSet() {
+    const param = new FeatureSetSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    if (this.formCreate1) {//khi init thì chưa tạo ra form
+      param.datasetId = this.formCreate1.form.value.datasetId;
+    }
+    this.featureSetService.requestSearch(null, param).subscribe(response => {
+      this.featureSets = response.results;
+    });
+  }
+
+  /** Kiểm tra tính hợp lệ của bước 1  */
+  checkValidStep1() {
+    //kiểm tra nhập đủ 3 ô và chọn 1 method
+    this.isValidStep1 = (this.formCreate1
+      && this.formCreate1.form.value.datasetId !== ''
+      && this.formCreate1.form.value.featureSetId !== ''
+      && this.formCreate1.form.value.ensembleMethod !== ''
+      && this.selectedAlgorithmIds.length > 0);
+  }
+
+  /** Ấn chọn hoặc bỏ chọn thuật toán  */
+  toggleAlgorithm(event: Event) {
+    const eleDiv = (event.currentTarget as HTMLDivElement);
+    const algorithmId = eleDiv.getAttribute('algorithm-id');
+    //kiểm tra div đã được chọn hay chưa
+    const indexAlg = this.selectedAlgorithmIds.indexOf(algorithmId);
+    if (indexAlg >= 0) {
+      this.selectedAlgorithmIds.splice(indexAlg, 1);//đã được chọn thì loại bỏ khỏi danh sách
+    } else {
+      this.selectedAlgorithmIds.push(algorithmId);//chưa được chọn thì cho vào danh sách chọn
+    }
+  }
+
+  //step 2
+  /**
+   * Xử lý nút train model ở bước cuối khi create model.
+   */
+  changeSelectedAlgorithmId(algorithmId: string) {
+    this.selectedAlgorithmId = algorithmId;
+    if (!algorithmId) {
+      return;
+    }
+    //TODO request param
+    const param = new ModelParamSearchParamModel();
+    param.algorithmId = algorithmId;
+    this.metaService.requestSearchModelParams(null, param).subscribe(response => {
+      console.log(response);
+    });
+  }
+
+  onTrainModel() {
+    console.log('TODO xử lý train model: confirm -> thông báo kết quả');
+  }
+
+  /**
+   * Thay đổi bước tạo thực thể
+   * @param step số 1 hoặc 2
+   */
+  onChangeStep(step: number) {
+    this.step = step;
+  }
+}

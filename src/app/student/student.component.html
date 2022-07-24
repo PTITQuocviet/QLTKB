@@ -1,0 +1,164 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Thông Tin Thời Khóa Biểu</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+        </div>
+
+        <div class="" id="filter">
+            <div class="filter-panel d-flex" style="background-color: #FAFAFA;">
+                <div>
+                    <form #formFilter="ngForm" >
+                        <div class="d-flex  align-content-start flex-wrap">
+                            <div ngbDropdown class="mr-2">
+                                <input type = "text" [(ngModel)]="selectedUser" (input) = "filterUsers()">
+                                <input ngbDropdownToggle (keyup)="onSearch($event)" >
+                                <div ngbDropdownMenu >
+                                    <div *ngFor="let subject of showSubjects">
+                                        <option value="1" style="padding-left: 2px; padding-right: 2px;"
+                                            ngbDropdownItem>
+                                            {{subject.subjectName }}
+                                        </option>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="d-flex align-content-center ml-auto flex-wrap">
+                    <div class="mr-auto">
+                        <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" >
+                            Tìm kiếm
+                            <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="content" class="d-flex flex-row">
+            <div class="search-result">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã MH</th>
+                                <th>Tên MH</th>
+                                <th>NMH</th>
+                                <th>STC</th>
+                                <th>Thứ</th>
+                                <th>Tiết BD</th>
+                                <th>Tiết KT</th>
+                                <th>Phòng</th>
+                                <th>DSGV</th>
+                                <th>Điểm thành phần</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let subject of subjects">
+                                <td> {{subject.subjectCode}}</td>
+                                <td> {{subject.subjectName}}</td>
+                                <td> {{subject.groupCode}}</td>
+                                <td> {{subject.credit}}</td>
+                                <td> {{subject.dayInWeek}}</td>
+                                <td> {{subject.startTime}}</td>
+                                <td> {{subject.endTime}}</td>
+                                <td> {{subject.room}}</td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm"
+                                        (click)="openModalListTeacher(subject.subjectCode)">
+                                        DSGV
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm"
+                                        (click)="openModalIngredientPoints(subject.subjectCode)">
+                                        Điểm thành phần
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /#page-content-wrapper -->
+
+
+<ng-template #modalListTeacher let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Danh sách giảng viên</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div *ngFor="let listTeacher of listTeacher">
+                    <label for="">{{listTeacher.firstName+ listTeacher.lastName}}</label>
+                </div>
+                <!-- <div>
+                    <label for="">Nguyễn Văn B</label>
+                </div> -->
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-sm btn-secondary" (click)=" modal1.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #modalIngredientPoints let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Điểm thành phần</h4>
+        <button id="btnCloseModalEdit" type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div style="border: solid 1px #E8E8E8;border-radius: 6px;">
+                <form #formCreate="ngForm">
+                    <table class="table form-group">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm chuyên cần</th>
+                                <td> <b class="text-muted">{{point.diligence}}</b> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm giữa kỳ</th>
+                                <td> <b class="text-muted">{{point.middlePoint}}</b> </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm cuối kỳ</th>
+                                <td> <b class="text-muted">{{point.finalPoint}}</b> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div>
+            <button type="button" class="btn btn-sm btn-secondary" (click)=" modal1.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>

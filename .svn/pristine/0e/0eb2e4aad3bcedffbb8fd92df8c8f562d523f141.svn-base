@@ -1,0 +1,15 @@
+<!-- trường hợp trang đăng nhập -->
+
+<router-outlet *ngIf="!loggedIn"></router-outlet>
+
+<!-- trường hợp khác -->
+<div id="wrapper" class="d-flex" *ngIf="loggedIn">
+    <app-sidebar></app-sidebar>
+    
+    <!-- Page Content -->
+    <div style="width: 100%;">
+        <router-outlet></router-outlet>
+    </div>
+    <!-- /Page Content -->
+</div>
+<!-- /#wrapper -->

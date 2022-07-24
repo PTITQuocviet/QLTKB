@@ -1,0 +1,47 @@
+.step-circle {
+    background: #F6F6F6;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.step-circle-active {
+    background: #1890FF;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+}
+
+.vl {
+    border-left: 1px solid #1890FF;
+    margin-left: 16px;
+    margin-top: -8px;
+    top: 0;
+    height: 22px
+}
+
+.vl-2 {
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+    margin-left: 16px;
+    margin-top: -8px;
+    height: 22px
+}
+
+.card,
+.card-secondary {
+    height: 7em;
+    width: 22em;
+    margin: 1em;
+    border-radius: 10px;
+}
+
+img.exc-mark {
+    float: right;
+}
+
+p {
+    text-align: center;
+}

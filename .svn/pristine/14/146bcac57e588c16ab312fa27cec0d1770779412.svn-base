@@ -1,0 +1,12 @@
+export class User {
+
+     username:string;
+      fullname: string;
+      status: number;
+      description: string;
+      change_time: Date;
+      change_user: string;
+    constructor(
+     // public username: string  //thông tin có thể lấy từ token
+    ) { }
+  }

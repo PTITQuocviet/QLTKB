@@ -1,0 +1,35 @@
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label for="date-input">Date:</label>
+            <div class="input-group">
+                <input id="date-input" type="text" class="form-control" aria-label="Date" required dlDateTimeInput
+                    [value]="enteredDate">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary dropdown-toggle date-dropdown" (click)="toggleCalendar()"
+                        type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                            class="oi oi-calendar"></i>
+                    </button>
+                    <div class="dropdown-menu" (click)="keepDropDownOpen($event)">
+                        <div style="width:360px;">
+                            <dl-date-time-picker [(ngModel)]="enteredDate" (change)="dateSelected($event)"
+                                [selectFilter]="datePickerFilter">
+                            </dl-date-time-picker>
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid-feedback">
+                    Please enter or choose a date and time after the current time.
+                </div>
+            </div>
+        </div>
+        <br>
+        <p>Entered date: <code>{{enteredDate}}</code>
+            <br>
+            <small class="form-text text-muted">The text above, if present, is the string representation of a
+                <code>Date</code> object in the model, the format is determined by
+                <code>Date.protoype.toString()</code>.
+            </small>
+        </p>
+    </div>
+</div>

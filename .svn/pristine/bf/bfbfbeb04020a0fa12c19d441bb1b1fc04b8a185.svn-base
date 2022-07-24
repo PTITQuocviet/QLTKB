@@ -1,0 +1,18 @@
+.app{
+    width: 84%;
+    /* transition: margin 25s ease-out; */
+    transition: width 5s;
+}
+.app.app-collapsed{
+    width: 100%;
+    /* margin-left: -13rem; */
+    transition: width 5s;
+}
+.app-sidebar{
+    width: 16%;
+    transition: width 5s;
+}
+.app-sidebar.app-sidebar-collapsed{
+    width: 0%;
+    /* margin-right: -2rem; */
+}

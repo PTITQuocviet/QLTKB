@@ -1,0 +1,110 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="m-2">
+            <div class="d-flex flex-row">
+                <div class="mr-auto d-flex">
+                    <h2>Quản lý giảng viên</h2>
+                    <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                        style="margin: 0.8rem">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" (click)="openModalCreate()">
+                        Tạo tài khoản
+                        <!-- <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white"> -->
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-row">
+                <div class='mr-auto'>
+                    <ul class="tab-bar">
+                        <li class="tab-bar-item active" (click)="onChangeTab('teacher')" style="cursor: pointer;">
+                            <div class="color-primary">QL Giảng Viên</div>
+                        </li>
+                        <li class="tab-bar-item" (click)="onChangeTab('student')" style="cursor: pointer;">
+                            <div class="text-muted">QL Sinh Viên</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div id="content" class="d-flex flex-row">
+            <div class="search-result">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Họ</th>
+                                <th>Tên Giảng Viên</th>
+                                <th>Email</th>
+                                <th>Địa chỉ</th>
+                                <th>Số điện thoại</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let centerTeacher of centerTeachers, let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{centerTeacher.firstName}}</td>
+                                <td>{{centerTeacher.lastName}}</td>
+                                <td>{{centerTeacher.email}}</td>
+                                <td>{{centerTeacher.address}}</td>
+                                <td>{{centerTeacher.phoneNumber}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <!-- search -->
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalCreateStudent let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Thêm sinh viên mới</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Họ </label>
+                    <input class="form-control" ngModel name="firstName">
+                </div>
+                <div>
+                    <label for="">Tên </label>
+                    <input class="form-control" ngModel name="lastName">
+                </div>
+                <div>
+                    <label for="">Email </label>
+                    <input class="form-control" ngModel name="email">
+                </div>
+                <div>
+                    <label for="">Mật khẩu </label>
+                    <input class="form-control" ngModel name="password">
+                </div>
+                <div>
+                    <label for="">Địa chỉ </label>
+                    <input class="form-control" ngModel name="address">
+                </div>
+                <div>
+                    <label for="">Số điện thoại </label>
+                    <input class="form-control" ngModel name="phoneNumber">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-secondary" (click)="onCreate(formCreate)">
+            Tạo mới
+        </button>
+    </div>
+</ng-template>

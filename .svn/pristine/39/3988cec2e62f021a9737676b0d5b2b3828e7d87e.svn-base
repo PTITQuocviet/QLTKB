@@ -1,0 +1,7 @@
+export class ModelParamModel {
+    
+    paramId: string;
+    paramCode: string;
+    defaultValue: string;
+
+}

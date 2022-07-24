@@ -1,0 +1,194 @@
+<!-- <app-sidebar></app-sidebar> -->
+
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Manage Evaluation</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted" style="margin: 0.8rem">
+            </div>
+
+            <div>
+
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1">
+
+                  Export
+                  <img src="./assets/icon/outlined/application/download.svg" style="filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(260deg) brightness(102%) contrast(102%);" alt="">
+              </button>
+                <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" (click)="onSearch(null)">
+                  Search
+                  <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+              </button>
+
+            </div>
+        </div>
+        <div class="mr-auto p-2 line" style="border-bottom: 1px solid #D9D9D9; color: #8C8C8C;">
+            0 row selected
+        </div>
+        <div id="content" class="row" style="width: 100%">
+            <!-- <div [ngClass]="isCollapsedFilter ? 'col-12' : 'col-9'"> -->
+            <div>
+                <table class="table" style="width: 100%;">
+
+                    <tr class="table-active">
+                        <!-- checkbox chưa dùng -->
+                        <!-- <th><input type="checkbox">
+                        </th> -->
+                        <th>STT</th>
+                        <th style="width: 260px; text-align: center;">Model</th>
+                        <th style="width: 230px;">Algorithm code</th>
+                        <th class="th-content">
+                            Accuracy
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            Precision
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+
+                        <th class="th-content">
+                            Recall
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            F1
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            MAE
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            RMSE
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            Score
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+                        <th class="th-content">
+                            Rank
+                            <button class="up"><img class="up" src="./assets/icon/outlined/directional/evaluation-up.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                            <button class="down"> <img class="down" src="./assets/icon/outlined/directional/evaluation-down.svg" style="filter: invert(80%) sepia(13%) saturate(9%) hue-rotate(85deg) brightness(89%) contrast(99%);" alt=""></button>
+                        </th>
+
+
+                        <th class="th-action">Actions</th>
+                    </tr>
+
+                    <tr *ngFor="let evaluation of evaluations; let i = index">
+                        <td>
+                            <div class="text-muted">{{minSTT + i}}</div>
+                        </td>
+                        <td>
+                            <div class="text-muted">#{{evaluation.file_id}}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-secondary">{{evaluation.model}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{evaluation.accuracy | number:'1.1-5'}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-muted">{{evaluation.precision | number:'1.1-5'}}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{evaluation.recall | number:'1.1-5'}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-muted">{{evaluation.f1 | number:'1.1-5'}}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{evaluation.mae | number:'.1-5'}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="text-muted">{{evaluation.rmse | number:'1.1-5'}}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{evaluation.score | number:'1.1-5'}}</div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div>
+                                <div class="text-muted">{{evaluation.rank}}</div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <div>
+                                <div class="text-title">By {{evaluation.createdUser}}</div>
+                                <div class="text-muted">{{evaluation.createdTime}}</div>
+                                <div class="row">
+                                    <div class="col-7">
+                                        <button class="btn shadow-none btn-sm deploy" (click)="openModalCreateProject()" style="position: relative;">Deploy
+                                      <img src=" ./assets/icon/outlined/application/deploy.svg" class="icon-sm icon-secondary" style="filter: invert(100%) sepia(7%) saturate(7474%) hue-rotate(189deg) brightness(110%) contrast(104%);">
+                                    </button>
+                                    </div>
+                                    <div class="col-5">
+                                        <app-modal-yes-no></app-modal-yes-no>
+                                    </div>
+                                </div>
+
+                                <!-- <button class="delete" style="position: absolute;">
+                                  <img src=" ./assets/icon/outlined/editor/delete.svg" alt="" style="filter: invert(31%) sepia(83%) saturate(2633%) hue-rotate(339deg) brightness(104%) contrast(90%);">
+                                </button> -->
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                </table>
+                <app-pagging></app-pagging>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #modalCreateProject let-modal1>
+    <div class="modal-header">
+        <div class="form-group col text-center">
+            <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+            <button type="button" class="btn btn-sm shadow-none btn-secondary m-1" data-bs-dismiss="modal" aria-label="Close" (click)="modal1.dismiss('close')">
+              Yes
+          </button>
+            <button type="submit" class="btn btn-sm shadow-none btn-secondary m-1" data-bs-dismiss="modal" aria-label="Close" (click)="modal1.dismiss('close')">
+            <i class="fas fa-times-circle"></i> No
+          </button>
+        </div>
+    </div>
+</ng-template>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- /#page-content-wrapper -->

@@ -1,0 +1,10 @@
+#tbl-step {
+    background-color: #F6F6F6;
+    border-radius: 8px;
+    width: 100%;
+}
+
+#tbl-step > tr > td > div.circle {
+    margin: 0.5rem;
+}
+

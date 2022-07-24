@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-lg navbar-light " style="background-color: white;">
+    <div class="p-2">
+        <button class="btn btn-light" (click)="toogleSidebar($event)" style="background-color: white;">
+            <img src="./assets/svg/sidebar/menu-fold.svg" alt="<">
+        </button>
+    </div>
+    <div class="p-2">
+        <button *ngIf="!isManageProjectPage" (click)="backProject()" class="btn btn-light"
+            style="background-color: white;">
+            Back
+        </button>
+    </div>
+    <div class="p-2">
+        <button hidden *ngIf="!isManageProjectPage" type="button" class="btn  new-project"> + New Project</button>
+    </div>
+    <div class="p-2">
+        <div *ngIf="!isManageProjectPage" ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle (click)="onSearch()">
+                <img src="./assets/svg/sidebar/churn-banking.svg" alt=""> Churn Banking version</button>
+            <div class="version" ngbDropdownMenu *ngFor="let project of projects">
+                <button ngbDropdownItem>{{project.id}}</button>
+                <button ngbDropdownItem>Version 2</button>
+                <button ngbDropdownItem>Version 3</button>
+            </div>
+        </div>
+    </div>
+    <div class="ml-auto p-2">
+        <button class="btn-notice">
+            <img class="ring" src="./assets/svg/sidebar/ring.svg">
+
+            <div class="notice" style="background: #00CCD6; width: 15px; height: 15px; "></div>
+        </button>
+        <div class="btn-group" ngbDropdown role="group">
+            <img class="person" src="./assets/svg/sidebar/person.svg" alt="">
+            <p class="text">{{getUser()}}</p>
+            <button class="btn " ngbDropdownToggle></button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+                <button ngbDropdownItem><img id="img-dropdown-item" src="./assets/svg/navbar/profile-user.svg" alt="">
+                    My profile</button>
+                <button ngbDropdownItem><img id="img-dropdown-item" src="./assets/svg/navbar/setting.svg"
+                        alt="">Setting</button>
+                <button ngbDropdownItem (click)="onLogout()"><img id="img-dropdown-item"
+                        src="./assets/svg/navbar/logout.svg" alt="">Log Out</button>
+            </div>
+        </div>
+    </div>
+</nav>

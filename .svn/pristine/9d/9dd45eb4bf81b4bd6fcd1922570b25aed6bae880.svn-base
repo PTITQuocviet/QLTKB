@@ -1,0 +1,52 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+
+@Component({
+  selector: 'app-ModelEdit',
+  templateUrl: './model-Edit.component.html',
+  styleUrls: ['./model-Edit.component.css']
+})
+export class ModelEditComponent implements OnInit {
+  closeModalResult = '';
+
+  @ViewChild('wrapper', { static: true }) wrapper: ElementRef;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+
+  @ViewChild('modalEdit', { static: true }) modalEdit: ElementRef;
+
+  constructor(
+      private modalService: NgbModal,
+    ){
+     
+  }
+
+  classString:string;
+
+  ngOnInit(): void {
+  }
+  openModalEdit() {
+    this.modalService.open(this.modalEdit, {})
+    .result
+    .then(
+      (result) => {//Closed
+        console.log(result);
+        if (result === 'create') {//không dùng
+          console.log(this.formCreate);
+        }
+      }, (reason) => {//Dismissed
+        this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+        console.log(this.closeModalResult);
+      });
+  }
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+}

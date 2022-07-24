@@ -1,0 +1,18 @@
+export class DatasetModel {
+  
+  id: string;
+  name: string;
+  progress: string;
+  startTime: number;
+  endTime: number;
+  createdUser: string;
+  status: string;
+  createdTime: number;
+
+  countFeature: number;
+  
+  constructor() {
+    // this.startTime = 1000;
+    // this.endTime = 1000;
+  }
+}

@@ -1,0 +1,13 @@
+export class ItemRuleModel {
+    stt: string;
+    id: string;
+    name: string;
+    progress: string;
+    startTime: number;
+    endTime: number;
+    createdUser: string;
+    status: string;
+    createdTime: number;
+    info: string;  
+  
+  }

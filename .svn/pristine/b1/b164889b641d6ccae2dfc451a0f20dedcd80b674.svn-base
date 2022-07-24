@@ -1,0 +1,326 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="m-2">
+            <div class="d-flex flex-row">
+                <div class="mr-auto d-flex">
+                    <h2>Manage dataset</h2>
+                    <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                        style="margin: 0.8rem">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="openModalCreateDataSet()">
+                        Process new data set
+                        <img src="./assets/icon/outlined/directional/play-circle.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-row">
+                <div class='mr-auto'>
+                    <ul class="tab-bar">
+                        <li class="tab-bar-item active" (click)="onChangeTab('dataset')">
+                            <div class="color-primary">Data set</div>
+                        </li>
+                        <li class="tab-bar-item" (click)="onChangeTab('item-rule')">
+                            <div class="text-muted">Item rule</div>
+                        </li>
+                        <li class="tab-bar-item" (click)="onChangeTab('raw-data')">
+                            <div class="text-muted">Raw data</div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <button *ngIf="datasets && datasets.length > 0" type="button"
+                        class="btn btn-sm shadow-none btn-primary m-1">
+                        Export
+                        <img src="./assets/icon/outlined/application/download.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="!isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Collapse
+                        <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Expand
+                        <img src="./assets/icon/outlined/directional/arrow-left.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div *ngIf="!datasets || datasets.length === 0" id="no-content" class="d-flex justify-content-center">
+            <div class="d-flex flex-row">
+                <img src="./assets/svg/empty-amico.svg">
+                <div style="margin: auto;">
+                    <h4 class="color-primary">No dataset found!</h4>
+                    <button type="button" class="btn shadow-none btn-secondary m-1" (click)="openModalCreateDataSet()">
+                        Process new data set
+                        <img src="./assets/icon/outlined/directional/play-circle.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="datasets && datasets.length > 0" id="content" class="row">
+            <div [ngClass]="{'col-12' : isCollapsedFilter, 'col-9': !isCollapsedFilter}">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <!--th>
+                            <label for="select_all_checkboxes" class="visuallyhidden"></label>
+                            <input type="checkbox" id="select_all_checkboxes" class="check-box-md" />
+                        </th-->
+                                <th>STT</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Progress</th>
+                                <th>Time</th>
+                                <th>Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let dataset of datasets; let i = index" [attr.data-index]="i">
+                                <!--td>
+                            <input type="checkbox" value="1" checked class="check-box-md" />
+                        </td-->
+                                <td>
+                                    <div class="text-muted">{{minSTT + i}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{dataset.id}}</div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="color-primary">{{dataset.name}}</div>
+                                        <div>
+                                            <span class="badge badge-secondary mr-1">{{dataset.countFeature}}
+                                                Features</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <h5>
+                                            <span
+                                                [class.badge-success]="getValueProgress(+dataset.progress, dataset.startTime, dataset.endTime) === 'Completed'"
+                                                [class.badge-warning]="getValueProgress(+dataset.progress, dataset.startTime, dataset.endTime) !== 'Completed'"
+                                                class="badge">
+                                                <img [attr.hidden]="getValueProgress(+dataset.progress, dataset.startTime, dataset.endTime) === 'Completed' ? '' : null"
+                                                    src=" ./assets/icon/outlined/application/sync.svg"
+                                                    class="icon-xs icon-secondary">
+                                                <img [attr.hidden]="getValueProgress(+dataset.progress, dataset.startTime, dataset.endTime) !== 'Completed' ? '' : null"
+                                                    src=" ./assets/icon/outlined/application/check-circle.svg"
+                                                    class="icon-xs icon-secondary">
+                                                {{getValueProgress(+dataset.progress, dataset.startTime,
+                                                dataset.endTime)}}
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div *ngIf="dataset.endTime" class="text-muted">
+                                        <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                            class="icon-xs icon-muted">
+                                        {{(dataset.endTime - dataset.startTime) | interval}}
+                                    </div>
+                                    <div *ngIf="!dataset.endTime && dataset.startTime" class="text-muted">
+                                        <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                            class="icon-xs icon-muted">
+                                        {{(currentDateUnix - dataset.startTime) | interval}}
+                                    </div>
+                                    <div *ngIf="!dataset.startTime && !dataset.endTime" class="text-muted">
+                                        <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                            class="icon-xs icon-muted">
+                                        0 seconds
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div [class.text-warning]="getStatusName(+dataset.progress, dataset.startTime, dataset.endTime) === 'Running'"
+                                            [class.text-success]="getStatusName(+dataset.progress, dataset.startTime, dataset.endTime) === 'Completed'"
+                                            class="color-primary"><b>{{getStatusName(+dataset.progress,
+                                                dataset.startTime,
+                                                dataset.endTime)}}</b>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="text-muted mr-1">Create by </div><b
+                                                class="text-title">{{dataset.createdUser}}</b>
+                                        </div>
+                                        <div class="text-muted">{{dataset.createdTime | date:'dd/MM/yyyy hh:mm:ss'}}
+                                        </div>
+                                    </div>
+
+                                </td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm">
+                                        <img src=" ./assets/icon/outlined/application/select.svg"
+                                            class="icon-sm icon-secondary mr-2" (click)="onManageDataset(dataset.id)">
+                                        <img src=" ./assets/icon/outlined/application/download.svg"
+                                            class="icon-md icon-secondary mr-2" (click)="openModalDownloadDataSet()">
+                                        <img src=" ./assets/icon/outlined/editor/delete.svg" class="icon-md icon-danger"
+                                            (click)="onDelete(dataset.id)">
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <div [attr.hidden]="isCollapsedFilter ? '' : null" class="col-3">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group" (keydown.enter)="onSearch(null)">
+                            <div>
+                                <label for="">ID</label>
+                                <input class="form-control" ngModel name="datasetId">
+                            </div>
+                            <div>
+                                <label for="">Name</label>
+                                <input class="form-control" ngModel name="datasetName">
+                            </div>
+                            <div>
+                                <label for="">Progress</label>
+                                <select class="form-control" ngModel name="stage">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="">All</option>
+                                    <!--option value="1">Insert</option-->
+                                    <option value="1">Clean</option>
+                                    <option value="2">Fill</option>
+                                    <option value="3">Scale</option>
+                                    <option value="4">Encode</option>
+                                    <option value="5">Split</option>
+                                    <option value="6">Balance</option>
+                                    <option value="7">Completed</option>
+                                    <!--option value="8">Completed</option-->
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <!--option value="none" selected disabled hidden>Select an Option</option-->
+                                    <option value="">All</option>
+                                    <option value="0">Running</option>
+                                    <option value="1">Completed</option>
+                                </select>
+                            </div>
+                            <!--div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    Sprint 1
+                                </label>
+                            </div-->
+                            <!--div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label" for="flexCheckChecked">
+                                    Version 2
+                                </label>
+                            </div-->
+                        </div>
+                    </form>
+
+                    <button type="button" class="btn btn-sm shadow-none btn-primary m-1" (click)="onSearch(null)">
+                        Search
+                        <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                    </button>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="onClearFilterForm()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalCreateDataSet let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Process new dataset</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Name dataset<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="datasetName" (blur)="onBlurNameDataset()"
+                        [ngStyle]="myStyle1">
+                </div>
+                <div>
+                    <label for="">Name your source table<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="sourceTable">
+                </div>
+                <div>
+                    <label for="">Choose your own data source<span style="color: red;"> *</span></label>
+                    <input class="form-check-input" type="checkbox" ngModel name="checkbox">
+                    <label class="form-check-label" for="flexCheckChecked">
+                        Choose your item rule source
+                    </label>
+                    <br>
+                    <button type="button" class="btn shadow-none btn-success"
+                        style="width: 70; height: 22; color: blue; background-color: white; border: 1cm;">
+                        Choose file
+                        <!--img src=" ./assets/icon/outlined/application/Button.svg" class="icon-xs"-->
+                    </button>
+                </div>
+                <div>
+                    <label for="">Item rule<span style="color: red;"> *</span></label>
+                    <select class="form-control" required name="itemRule"></select>
+                </div>
+                <div>
+                    <label for="">Description</label>
+                    <textarea class="form-control" ngModel name="description" rows="3" style="resize: none;"></textarea>
+                </div>
+                <div>
+                    <label for="">Tag</label>
+                    <input class="form-control" ngModel name="tag">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <!--button type="button" class="btn shadow-none btn-primary" (click)="modal.dismiss('close')">Save as raw data</button-->
+        <button type="button" class="btn shadow-none btn-primary" (click)="onCreateDataset(formCreate)">Save as raw
+            data</button>
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal.close('create')">Save</button> -->
+    </div>
+</ng-template>
+
+<ng-template #modalDeleteDataSet let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Are you sure to delete this dataset?</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!--input type="submit" onclick="return clicked();" value="Yes" style="color: black;"/-->
+    <!--button type=button class="btn btn-danger"  (click)="clickMethod('name')">Yes</button-->
+    <button type="button" ngbAutofocus class="btn btn-danger" (click)="modal.close('Close dialog')">Yes</button>
+
+    <div class="modal-footer">
+    </div>
+</ng-template>
+
+<ng-template #modalDownloadDataSet let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Are you want to download this dataset?</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!--input type="submit" onclick="return clicked();" value="Yes" style="color: black;"/-->
+    <!--button type=button class="btn btn-danger"  (click)="clickMethod('name')">Yes</button-->
+    <button type="button" ngbAutofocus class="btn btn-success" (click)="modal.close('Close dialog')">Yes</button>
+
+    <div class="modal-footer">
+    </div>
+</ng-template>

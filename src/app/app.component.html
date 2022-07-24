@@ -1,0 +1,16 @@
+<!-- trường hợp trang đăng nhập -->
+
+<router-outlet *ngIf="!loggedIn"></router-outlet>
+
+<!-- trường hợp khác -->
+<div id="wrapper" class="d-flex" *ngIf="loggedIn">
+    <app-sidebar [attr.hidden]="getRoles()  ? null: ''" [class.app-sidebar-collapsed]="sidebarCollapsed" class="app-sidebar"></app-sidebar>
+    
+    <!-- Page Content -->
+    <div [class.app-collapsed]="sidebarCollapsed"  [class.app-collapsed]="!getRoles()" class="app">
+        <div></div>
+        <router-outlet></router-outlet>
+    </div>
+    <!-- /Page Content -->
+</div>
+<!-- /#wrapper -->

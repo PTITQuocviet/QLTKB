@@ -1,0 +1,297 @@
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="card m-4">
+        <h3 class="card-header">
+            Create new model
+        </h3>
+        <div class="card-body">
+            <div *ngIf="step === 1" class='row'>
+                <div class="col-3">
+                    <table id="tbl-step">
+                        <tbody class="no-line">
+                            <tr>
+                                <td style="width: 1px;">
+                                    <div class="circle circle-solid">1</div>
+                                </td>
+                                <td>
+                                    <div>In Progress</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="vertical" style="margin-left: 16px;"></div>
+                                </td>
+                                <td style="vertical-align: text-top">
+                                    <div style="margin-top: -0.5rem;">Basic information</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="circle disabled">2</div>
+                                </td>
+                                <td>
+                                    <div>Waiting</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="vertical disabled" style="margin-left: 16px;"></div>
+                                </td>
+                                <td style="vertical-align: text-top">
+                                    <div style="margin-top: -0.5rem;">Manage Algorithm</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="circle disabled">3</div>
+                                </td>
+                                <td>
+                                    <div>Waiting</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="vertical-align: text-top; padding-bottom: 24px;">
+                                    <div style="margin-top: -0.5rem;">Save and Train model</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-9">
+                    <form #formFilter="ngForm">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Dataset</label>
+                                    <select class="form-control" ngModel name="datasetId">
+                                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                        <option value="1">12342 - dataset 1</option>
+                                        <option value="2">233423 - dataset 2</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label for="">Feature set</label>
+                                    <select class="form-control" ngModel name="featureSetId">
+                                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                        <option value="1">12342 - feature set 1</option>
+                                        <option value="2">233423 - feature set 2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="">Ensemble method</label>
+                                    <select class="form-control" ngModel name="ensembleMethod"
+                                        (change)="onChangeEnsembleMethod($event)">
+                                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                        <option value="single">Single</option>
+                                        <option value="bagging">Bagging Ensemble</option>
+                                        <option value="boosting">Boosting Ensemble</option>
+                                        <option value="stacking">Stacking Ensemble</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label for="">Select algorithm</label>
+                            <div class="d-flex flex-row">
+                                <div class="col-4 card m-3">
+                                    <div class="card-body">
+                                        Logistic regression
+                                    </div>
+                                </div>
+                                <div class="col-4 card m-3">
+                                    <div class="card-body">
+                                        Logistic regression
+                                    </div>
+                                </div>
+                                <div class="col-4 card m-3">
+                                    <div class="card-body">
+                                        Logistic regression
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-row">
+                                <div class="col-4 card m-3">
+                                    <div class="card-body">
+                                        Logistic regression
+                                    </div>
+                                </div>
+                                <div class="col-4 card m-3">
+                                    <div class="card-body">
+                                        Logistic regression
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div *ngIf="step === 2" class='row'>
+                <div class="col-3">
+                    <table id="tbl-step">
+                        <tbody class="no-line">
+                            <tr>
+                                <td style="width: 1px;">
+                                    <div class="circle">
+                                        <img src="./assets/icon/outlined/suggested/check.svg" class="icon-sm icon-info">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>Finished</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="vertical" style="margin-left: 16px;"></div>
+                                </td>
+                                <td style="vertical-align: text-top">
+                                    <div style="margin-top: -0.5rem;">Basic information</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="circle circle-solid">2</div>
+                                </td>
+                                <td>
+                                    <div>In Progress</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="vertical disabled" style="margin-left: 16px;"></div>
+                                </td>
+                                <td style="vertical-align: text-top">
+                                    <div style="margin-top: -0.5rem;">Manage Algorithm</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="circle disabled">3</div>
+                                </td>
+                                <td>
+                                    <div>Waiting</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="vertical-align: text-top; padding-bottom: 24px;">
+                                    <div style="margin-top: -0.5rem;">Save and Train model</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            Summary
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Name: Churn Banking - V2</li>
+                            <li class="list-group-item">Dataset: 54634456 yjnsdryhdyh dyj dtyjfjtng</li>
+                            <li class="list-group-item">Featureset: 13243</li>
+                            <li class="list-group-item">Ensemble method: gserthgbrsdth sdryjhtdryjh</li>
+                        </ul>
+                    </div>
+                    <div>
+                        summary
+                    </div>
+                </div>
+
+                <div class="col-9">
+                    <div class="col-6">
+                        <div class="d-flex flex-row">
+                            <div class="mr-2">Algorithm</div>
+                            <span><img src="./assets/icon/outlined/suggested/info-circle.svg"
+                                    class="icon-sm icon-muted"></span>
+                        </div>
+                        <div class="table-border">
+                            <table style="border-radius: 8px">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="text-muted">StackingClassifier</div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <img src=" ./assets/icon/outlined/editor/edit.svg"
+                                                    class="icon-sm icon-secondary">
+                                                <img src="./assets/icon/outlined/editor/delete.svg"
+                                                    class="icon-sm icon-danger">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="text-muted">Decision Tree Classifier</div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <img src=" ./assets/icon/outlined/editor/edit.svg"
+                                                    class="icon-sm icon-secondary">
+                                                <img src="./assets/icon/outlined/editor/delete.svg"
+                                                    class="icon-sm icon-danger">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="text-muted">K-Neighbours Classifier</div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <img src=" ./assets/icon/outlined/editor/edit.svg"
+                                                    class="icon-sm icon-secondary">
+                                                <img src="./assets/icon/outlined/editor/delete.svg"
+                                                    class="icon-sm icon-danger">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <div>
+                                                <button class="btn btn-sm btn-secondary">
+                                                    <img src="./assets/icon/outlined/suggested/plus.svg"
+                                                        class="icon-sm icon-white">
+                                                    Add an algorithm
+                                                </button>
+                                                <span><img src="./assets/icon/outlined/suggested/info-circle.svg"
+                                                        class="icon-sm icon-muted"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-9">
+
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex">
+                <div class="mr-auto">
+                    <button *ngIf="step > 1" class="btn btn-sm btn-info" (click)="onChangeStep(step - 1)">
+                        <img src="./assets/icon/outlined/directional/left.svg" class="icon-xs icon-white">
+                        Back
+                    </button>
+                </div>
+                <div>
+                    <button *ngIf="step === 1" class="btn btn-sm btn-info" (click)="onChangeStep(2)">
+                        <img src="./assets/icon/outlined/directional/right.svg" class="icon-xs icon-white">
+                        Next to step 2: Manage Algorithm
+                    </button>
+                    <button *ngIf="step === 2" class="btn btn-sm btn-info" (click)="onTrainModel()">
+                        <img src="./assets/icon/outlined/directional/right.svg" class="icon-xs icon-white">
+                        Complete: Save and Train model
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

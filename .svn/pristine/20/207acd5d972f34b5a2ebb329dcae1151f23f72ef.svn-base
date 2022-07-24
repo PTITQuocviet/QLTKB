@@ -1,0 +1,7 @@
+export class FeatureSetParamModel {
+    
+    paramId: string;
+    paramCode: string;
+    defaultValue: string;
+
+}

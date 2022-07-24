@@ -1,0 +1,24 @@
+export class ItemRuleSearchParamModel {
+
+  id: string;
+  name: string;
+  status: string; 
+
+  constructor() {
+  }
+
+  /** set giá trị từ form value */
+  build(formValue: {}): ItemRuleSearchParamModel {
+    const searchParam = new ItemRuleSearchParamModel();
+    if (!formValue) {
+      return searchParam;
+    }
+
+    // for (const [key, value] of Object.entries(searchParam)) { }
+    for (let key in formValue) {
+      searchParam[key] = formValue[key];
+    }
+
+    return searchParam;
+  }
+}

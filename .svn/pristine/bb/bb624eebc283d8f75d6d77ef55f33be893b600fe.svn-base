@@ -1,0 +1,230 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header d-flex" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Manage model</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" style="filter: invert(84%) sepia(7%) saturate(8%) hue-rotate(39deg) brightness(89%) contrast(87%); height: 20px;width: 20px;margin: 0.8rem">
+            </div>
+            <div>
+                <button type="button" class="btn shadow-none btn-secondary m-2" (click)="openModalUploadItemRule()">
+                    New model
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                </button>
+            </div>
+        </div>
+        <div id="content-header d-flex" class="row m-2">
+            <div class="mr-auto d-flex">
+            </div>
+            <div>
+                <!-- <button type="button" class="btn shadow-none btn-secondary m-2" (click)="openModalUploadItemRule()">
+                    Collapse
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                </button> -->
+                <button type="button" class="btn shadow-none btn-secondary m-2" (click)="isCollapsedFilter=!isCollapsedFilter">
+                    Collapse
+                    <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                </button>
+            </div>
+        </div>
+        <div id="content" class="row">
+            <div [ngClass]="{'col-12' : !isCollapsedFilter}">
+                <table class="table">
+                    <tr class="table-active">
+                        <th>STT</th>
+                        <th>Model</th>
+                        <th>Dataset</th>
+                        <th>Feature set</th>
+                        <th>Method</th>
+                        <th>Algorithm code</th>
+                        <th>Time</th>
+                        <th>Info</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let model of models">
+                        <td>
+                            <div class="text-muted">{{model.stt}}</div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">#{{model.idmodel}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">#{{model.iddataset}}</div>
+                                <div class="color-primary">Smart user data</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">#{{model.idFeature}}</div>
+                                <div class="color-primary">Smart user data</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">Single</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{model.algorithmCode}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div class="text-muted">{{model.time_model}}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <div [ngClass]="classString">{{model.info_process}}</div>
+                                <div class="text-muted">Created by: <span style="color: rgb(0, 0, 0);font-weight: bold;">{{model.created_by}}</span></div>
+                                <div class="text-muted">01-01-2022 10:20:17</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <button class="btn shadow-none btn-sm">
+                                    <img src=" ./assets/icon/outlined/application/layout.svg"
+                                        class="icon-md icon-secondary mr-4">
+                                    <img src=" ./assets/icon/outlined/editor/delete.svg" class="icon-md icon-danger">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- step-circle -->
+                <div class="filter-panel" style="background-color: #FAFAFA;width: 244px;">
+                    <form>
+                        <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                            <div class="step-circle-active">
+                                <p style="padding-top: 3px; color: #FFFFFF;">1</p>
+                                <div class="vl"></div>
+                            </div>
+                            <div style="padding-left: 10px;">
+                                <p style="margin-bottom: 0px">In progress</p>
+                                <p>Basic information</p>
+                            </div>
+                        </div>
+                        <div class="row text-muted" style="margin-left: 0px; margin-right: 0px;">
+                            <div class="step-circle">
+                                <p style="padding-top: 3px;">2</p>
+                                <div class="vl-2"></div>
+                            </div>
+                            <div style="padding-left: 10px;">
+                                <p style="margin-bottom: 0px">Waiting</p>
+                                <p>Manage Algorithms</p>
+                            </div>
+                        </div>
+                        <div class="row text-muted" style="margin-left: 0px; margin-right: 0px;">
+                            <div class="step-circle">
+                                <p style="padding-top: 3px;">3</p>
+                            </div>
+                            <div style="padding-left: 10px;">
+                                <p style="margin-bottom: 0px">Waiting</p>
+                                <p>Save aand Train model</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Select algorithms * -->
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-3">
+                        <div class="card" style="border-style: dashed;">
+                            <div class="card-body">
+                                <h5 class="card-title"><img class="exc-mark" src="./assets/icon/outlined/directional/exclamation-mark.svg" alt=""></h5>
+                                <p class="text-muted">Decision Tree Classifier</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card" style="border-style: dashed;">
+                            <div class="card-body">
+                                <h5 class="card-title"><img class="exc-mark" src="./assets/icon/outlined/directional/exclamation-mark.svg" alt=""></h5>
+                                <p class="text-muted">Decision Tree Classifier</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card" style="border-style: dashed;">
+                            <div class="card-body">
+                                <h5 class="card-title"><img class="exc-mark" src="./assets/icon/outlined/directional/exclamation-mark.svg" alt=""></h5>
+                                <p class="text-muted">Decision Tree Classifier</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2"></div>
+                    <div class="col-3">
+                        <div class="card" style="border-style: dashed;">
+                            <div class="card-body">
+                                <h5 class="card-title"><img class="exc-mark" src="./assets/icon/outlined/directional/exclamation-mark.svg" alt=""></h5>
+                                <p class="text-muted">Decision Tree Classifier</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card-secondary" style="border: solid 1px #D9DEDE;background-color: #00CCD6; ">
+                            <div class="card-body">
+                                <h5 class="card-title"><img class="exc-mark" src="./assets/icon/outlined/directional/exclamation-mark.svg" style="filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(152deg) brightness(103%) contrast(103%);"></h5>
+                                <p class="card-text" style="color: #FFFFFF;">K-Neighbours Classifier</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <app-pagging></app-pagging>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalUploadItemRule let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update new item rule</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Name your item rule<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="itemRuleName">
+                </div>
+                <div>
+                    <label for="">Choose your item rule source<span style="color: red;"> *</span></label>
+                    <!-- <input class="form-control" required ngModel name="mlType"> -->
+                    <select class="form-control" required ngModel name="mlType">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option value="1" selected>Rule source 01</option>
+                        <option value="2">Rule source 02</option>
+                        <option value="3">Rule source 03</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="">Description</label>
+                    <textarea class="form-control" ngModel name="description" rows="3" style="resize: none;"></textarea>
+                </div>
+                <div>
+                    <label for="">Tag</label>
+                    <input class="form-control" ngModel name="tag">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-primary" (click)="onSaveModel(formCreate)">Save</button>
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal.close('create')">Save</button> -->
+    </div>
+</ng-template>

@@ -1,0 +1,102 @@
+img.up {
+    margin-top: -11px;
+}
+
+img.down {
+    margin-left: -1.px;
+    margin-top: -10px;
+}
+
+button.up {
+    /* display: none; */
+    border: none;
+    width: 21px;
+    align-items: center;
+    height: 14px;
+    position: relative;
+    background-color: #F6F6F6;
+}
+
+th {
+    font-family: Segoe UI;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+button.down {
+    width: 21px;
+    align-items: center;
+    height: 14px;
+    border: none;
+    position: absolute;
+    margin-top: 13px;
+    margin-left: -21px;
+    background-color: #F6F6F6;
+}
+
+table.table {
+    margin-left: 20px;
+    margin-top: 25px;
+}
+
+button {
+    background: #0043A5;
+    width: 85px;
+    height: 32px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+button.btn.btn-sm.shadow-none.btn-secondary.m-1:hover {
+    background-color: #2860B5;
+}
+
+button.up:hover {
+    background-color: #8F9C9C;
+}
+
+button.down:hover {
+    background-color: #8F9C9C;
+}
+
+.mr-auto.p-2.line {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+}
+
+th.th-content {
+    /* width: 140px; */
+    width: 8.750em;
+    text-align: center;
+}
+
+th.th-action {
+    width: 145px;
+}
+
+button.btn.shadow-none.btn-sm.deploy {
+    background: #2EB553;
+    color: #FFFFFF;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+button.delete {
+    width: 42px;
+    background: #ffffff;
+    border: none;
+}
+
+.text-muted {
+    text-align: center;
+}

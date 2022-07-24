@@ -1,0 +1,29 @@
+import { DatasetModel } from "../dataset/dataset.model";
+import { FeatureSetParamRunModel } from "./feature-set-param-run.model";
+import { MethodModel } from "../shared/model/method.model";
+import { FeatureSetStatusModel } from "./feature-set-status.model";
+import { FeatureSetResultModel } from "./feature-set-result.model";
+import { ProjectModel } from "../project/project.model";
+
+export class FeatureSetModel {
+
+    id: number;
+    project: ProjectModel;
+    dataset: DatasetModel;
+    method: MethodModel;
+    createdUser: string;
+    featureSetStatus: FeatureSetStatusModel;
+    parameterRuns: FeatureSetParamRunModel[];
+    featureSetResults: FeatureSetResultModel[];
+    createdTime: number;
+
+    countFeature: number = 0;//
+
+    constructor() {
+        this.project = new ProjectModel();
+        this.dataset = new DatasetModel();
+        this.method = new MethodModel();
+        this.featureSetStatus = new FeatureSetStatusModel();
+        this.parameterRuns = [];
+    }
+}

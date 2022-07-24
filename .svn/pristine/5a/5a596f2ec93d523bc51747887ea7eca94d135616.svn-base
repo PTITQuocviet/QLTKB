@@ -1,0 +1,25 @@
+export class DatasetSearchParamModel {
+    projectId: string;
+    datasetId: string;
+    datasetName: string;
+    stage: number;//thứ tự bước thực hiện
+    status: number;
+
+    constructor() {
+    }
+  
+    /** set giá trị từ form value */
+    build(projectId: string, formValue: {}): DatasetSearchParamModel {
+      const searchParam = new DatasetSearchParamModel();
+      searchParam.projectId = projectId;
+      if (!formValue) {
+        return searchParam;
+      }
+  
+      for (let key in formValue) {
+        searchParam[key] = formValue[key];
+      }
+  
+      return searchParam;
+    }
+}

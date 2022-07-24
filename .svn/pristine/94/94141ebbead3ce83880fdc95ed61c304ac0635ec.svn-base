@@ -1,0 +1,11 @@
+export class ModelParamModel {
+    
+    id: string;
+    code: string;
+    order: number;
+    description: string;
+    defaultValue: string;
+    //không cần status, createdTime, algorithm
+    options: [];//các giá trị có thể lựa chọn cho param, nếu 0 phần tử là người dùng nhập giá trị tự do
+
+}

@@ -1,0 +1,165 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { UserModel } from '../user/user.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { NgForm } from '@angular/forms';
+import { PaggingService } from '../pagging/pagging.service';
+import { UserService } from './user.service'
+import { Subscription } from 'rxjs';
+import { UserSearchParamModel } from "./user-search-param.model";
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import Swal from 'sweetalert2';
+
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  users: UserModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter project
+  paggingSubscription: Subscription;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentDateUnix: number;
+  editingUser: UserModel = null;
+  closeModalResult = '';
+  isEditUser = true;//kiểm tra modal đang xem hay đang sửa project
+  descriptionLength: number =20; // dộ dài của description hiển thị trên table
+
+  @ViewChild('formFilter') formFilter: NgForm;
+  @ViewChild('modalEditUser', { static: true }) modalEditUser: ElementRef;
+
+  mapStatus = {
+    1: 'Active',
+    2: 'Inactive'
+  };
+  constructor(
+    private route: ActivatedRoute,
+    private paggingService: PaggingService,
+    private UserService: UserService,
+    private modalService: NgbModal,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+  alertWithSuccess(){  
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+      }
+    }) 
+  }  
+  // xóa thông tin tìm kiếm trên form
+  onClearFilterForm() {
+    this.formFilter.reset();
+  }
+  // request search
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new UserSearchParamModel();
+    // TODO validate form và xử lý thêm các loại ở form
+    // console.log(this.formFilter.form.value);
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+    // searchParam.username = this.route.snapshot.params['username'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.UserService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.users = resultPagging.results;
+      });
+  }
+
+  // request xóa
+  onSubmitModalYesNo(event: { btnCode: number }, id: number) {
+    if (event.btnCode == 1) {
+      const user = new UserModel();
+      user.id = id
+      this.UserService.requestDelete(user)
+        .subscribe(u => {
+          this.onSearch(null);//tìm kiếm lại trang đầu
+        });
+    }
+  }
+
+  // request update
+  openModalEditUser(id: number) {
+    this.isEditUser = false;//mặc định là xem project với modal xem sửa project.
+
+    //request thông tin user, lưu vào biến editingUser
+    this.UserService.request(id).subscribe(result => {
+      this.editingUser = result;
+      this.editingUser.statusName = this.mapStatus[this.editingUser.status];
+      // editingUser
+      this.modalService.open(this.modalEditUser, {})
+        .result
+        .then(
+          (result) => {//Closed
+            console.log(result);
+          }, (reason) => {//Dismissed
+            this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+            console.log(this.closeModalResult);
+          });
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  /**Ấn nút edit project */
+  onEditUser(form: NgForm) {
+    //TODO nếu sửa lỗi thì không đóng modal
+    const user = new UserModel();
+    user.id = this.editingUser.id;
+    user.username = this.editingUser.username;
+    user.fullname = form.value.fullname;
+    user.status = form.value.status;
+    user.description = form.value.description;
+
+    this.UserService.requestUpdate(user).subscribe(
+      data => {
+        this.editingUser = data;//cập nhật thông tin của user đang sửa
+        this.onSearch(null)
+      }
+      , error => {
+        console.log(error);
+      }
+    )
+    // this.onSearch(null)
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+}

@@ -1,0 +1,74 @@
+#sidebar-wrapper {
+    height: 100%;
+    min-height: 100vh;
+    margin-left: 0;
+    /* -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out; */
+}
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+}
+#sidebar-wrapper .list-group {
+    /* width: 15rem; */
+    overflow: hidden;
+}
+/* #sidebar-wrapper.sidebar-collapsed {
+    margin-left: -15rem;
+} */
+
+/* cần đổi màu của svg và text trong sidebar khi hover */
+a:hover > img {
+    /* Màu đích: A0A6AE.
+    Đổi icon màu đen: brightness(0) saturate(100%). https://codepen.io/sosuke/pen/Pjoqqp 
+    Đổi icon màu trắng: brightness(0) saturate(100%) invert(1)
+    */
+    filter: brightness(0) saturate(100%) brightness(65%) invert(73%) sepia(7%) saturate(310%) hue-rotate(175deg) brightness(90%) contrast(91%);
+}
+
+div, a {
+    color:white;
+}
+
+.bg-sidebar {
+    background-color: #122034;
+}
+
+.menu-item:hover {
+    background-color: #1b6063;
+    color:white;
+}
+
+.menu-item-selected {
+    background-color: #00ccd6;
+    color: white;
+    /* color:white; */
+}
+
+a.menu-item img{
+    /* #8C8C8C */
+    filter: invert(84%) sepia(7%) saturate(8%) hue-rotate(39deg) brightness(89%) contrast(87%);
+}
+a.menu-item span{
+    /* Text Colors/Body Text */
+    color: #8C8C8C !important;
+}
+a.menu-item.menu-item-selected img{
+    filter: invert(1);
+}
+a.menu-item.menu-item-selected span{
+    color: white !important;
+}
+
+/* sub menu item được cách ra so với đầu dòng */
+.sub-menu-item {
+    margin-left: 1rem;
+    /* làm chuyển động thu mở submenu item */
+    transition: margin .25s ease-out;
+}
+
+.menu-item {
+    border: 0;
+}

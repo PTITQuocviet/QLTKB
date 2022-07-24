@@ -1,0 +1,26 @@
+#page-content-wrapper {
+    min-width: 100vw;
+  }
+  @media (min-width: 768px) {
+    #page-content-wrapper {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+  
+  #content-header {
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+#filter{
+   margin-left: 1.875em;
+   width:31%;
+   -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+}
+#filter.filter-collapsed {
+  margin-right: -25rem;
+  
+}

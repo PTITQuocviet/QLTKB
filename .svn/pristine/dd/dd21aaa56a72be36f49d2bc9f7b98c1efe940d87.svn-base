@@ -1,0 +1,102 @@
+import { Component,  ElementRef,  OnInit, ViewChild } from '@angular/core';
+import {  ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { EvaluationModel } from './evaluation.model';
+import { PaggingService } from '../pagging/pagging.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { EvaluationSearchParamModel } from './evaluation-search-param.model';
+import { NgForm } from '@angular/forms';
+import{EvaluationService} from './evaluation.service'
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+@Component({
+  selector: 'app-evaluation',
+  templateUrl: './evaluation.component.html',
+  styleUrls: ['./evaluation.component.css']
+})
+
+export class EvaluationComponent implements OnInit {
+  evaluations : EvaluationModel[]=[] ;
+  @ViewChild('wrapper', { static: true }) wrapper: ElementRef;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+
+  @ViewChild('modalCreateProject', { static: true }) modalCreateProject: ElementRef;
+  @ViewChild('modalEditProject', { static: true }) modalEditProject: ElementRef;
+
+  @ViewChild('formFilter') formFilter: NgForm;
+
+  modalService: any;
+  closeModalResult: string;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentDateUnix: number;
+  paggingSubscription: Subscription;
+  constructor(
+    private paggingService: PaggingService,
+    private EvaluationService: EvaluationService,
+    private route: ActivatedRoute,
+  ){
+
+  }
+
+  ngOnInit(): void {
+
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+
+  }
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new EvaluationSearchParamModel();
+    // TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.model = this.route.snapshot.params['model'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.EvaluationService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.evaluations = resultPagging.results;
+      });
+  }
+
+
+
+
+openModalCreateProject() {
+  this.modalService.open(this.modalCreateProject, {})
+    .result
+    .then(
+      (result) => {//Closed
+        console.log(result);
+        if (result === 'create') {//không dùng
+          console.log(this.formCreate);
+        }
+      }, (reason) => {//Dismissed
+        this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+        console.log(this.closeModalResult);
+      });
+}
+private getDismissModalReason(reason: any): string {
+  if (reason === ModalDismissReasons.ESC) {
+    return 'by pressing ESC';
+  } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+    return 'by clicking on a backdrop';
+  } else {
+    return `with: ${reason}`;
+  }
+}
+
+
+}
+
+

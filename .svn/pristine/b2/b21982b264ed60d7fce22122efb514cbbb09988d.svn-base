@@ -1,0 +1,11 @@
+import { FeatureSetParamModel } from "./feature-set-param.model";
+
+export class FeatureSetParamRunModel {
+
+    paramValue: string;
+    featureSetParameter: FeatureSetParamModel;
+    
+    constructor() {
+        this.featureSetParameter = new FeatureSetParamModel();
+    }
+}

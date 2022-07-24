@@ -1,0 +1,259 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DatasetModel } from './dataset.model';
+import { DatasetService } from './dataset.service';
+import { PaggingService } from '../pagging/pagging.service';
+import { DatasetSearchParamModel } from './dataset-search-param.model';
+import { NgForm } from '@angular/forms';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { LoginService } from '../login/login.service';
+
+
+@Component({
+  selector: 'app-dataset',
+  templateUrl: './dataset.component.html',
+  styleUrls: ['./dataset.component.css']
+})
+export class DatasetComponent implements OnInit {
+
+  @ViewChild('formFilter') formFilter: NgForm;
+  @ViewChild('formCreate') formCreate: NgForm;
+  @ViewChild('modalCreateDataSet', { static: true }) modalCreateDataSet: ElementRef;
+  @ViewChild('modalDownloadDataSet', { static: true }) modalDownloadDataSet: ElementRef;
+  @ViewChild('modalDeleteDataSet', { static: true }) modalDeleteDataSet: ElementRef;
+
+  datasets: DatasetModel[] = [];
+  /** Thời gian hiện tại để tính khoảng thời gian khi không có end time. Dạng unix mili giây */
+  currentDateUnix: number;
+  isCollapsedFilter = false;//trạng thái mở của khung filter project
+  closeModalResult = '';
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  myStyle1 = {
+    'background-color': "#ffffc1"
+  }
+
+  mapProgress = {
+    1: 'Clean',
+    2: 'Fill',
+    3: 'Scale',
+    4: 'Encode',
+    5: 'Split',
+    6: 'Balance',
+    7: 'Completed',
+  };
+
+  constructor(
+    private router: Router
+    , private route: ActivatedRoute
+    , private paggingService: PaggingService
+    , private datasetService: DatasetService
+    , private modalService: NgbModal,
+    private loginService: LoginService,
+  ) { }
+
+  ngOnInit(): void {
+    this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+
+  onSearch(pagging: PaggingModel) {
+    const projectId = this.route.snapshot.params['idProject'];//TODO khởi tạo giao diện của dataset của project có id = idProject
+
+    if (!pagging) {
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new DatasetSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+
+    if (!this.formFilter) {
+      searchParam = searchParam.build(projectId, null);
+    } else {
+      searchParam = searchParam.build(projectId, this.formFilter.form.value);
+      console.log(this.formFilter.value.status);
+    }
+    this.currentDateUnix = (new Date()).getTime();
+    this.datasetService.requestSearch(pagging, searchParam)
+      .subscribe(resultPagging => {
+        this.datasets = resultPagging.results;
+      });
+  }
+
+  onClearFilterForm() {
+    this.formFilter.reset();
+  }
+
+  /**
+   * change tab
+   * @param tabName tab name
+   */
+  onChangeTab(tabName: string) {
+    if (tabName === 'dataset') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'dataset']);
+    } else if (tabName === 'item-rule') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'item-rule-set']);
+    } else if (tabName === 'raw-data') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'raw-data']);
+    }
+  }
+
+  onCreateDataset(form: NgForm) {
+    const projectId = this.route.snapshot.params['idProject'];
+    const user = this.loginService.user.getValue().username;
+    let dataset = new DatasetModel();
+
+    dataset.name = form.value.datasetName;
+    dataset.createdUser = user;
+    dataset.createdTime = (new Date()).getTime();
+    dataset.progress = '1';
+
+    if (!form) {
+      console.log(form);
+    } else {
+      console.log(form.value.checkbox);
+    }
+
+    this.datasetService.requestCreate(projectId, dataset)
+      .subscribe(response => {
+        console.log(response);
+        this.onSearch(null);
+      });;
+    this.closeModalResult = 'zzz';
+  }
+
+  onDelete(datasetId: string) {
+    const projectId = this.route.snapshot.params['idProject'];
+
+    this.datasetService.requestDelete(projectId, datasetId)
+      .subscribe(response => {
+        console.log(response);
+        this.onSearch(null);
+      });;
+  }
+
+  /**
+   * Chuyển đến trang dataset chi tiết
+   * @param datasetId 
+   */
+  onManageDataset(datasetId: string) {
+    this.router.navigate([datasetId], { relativeTo: this.route });
+  }
+
+  openModalCreateDataSet() {
+    this.modalService.open(this.modalCreateDataSet)
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        });
+  }
+
+  openModalDeleteDataSet() {
+    this.modalService.open(this.modalDeleteDataSet)
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        }
+      );
+  }
+
+  openModalDownloadDataSet() {
+    this.modalService.open(this.modalDownloadDataSet)
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        }
+      );
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+  onCreateDataSet(form: NgForm) {
+    console.log(form);
+    const param = new DatasetSearchParamModel();
+    param.stage = 7;//trạng thái đã chạy xong
+    const pagging = new PaggingModel(1);
+    pagging.rowPerPage = 1000;//số to để load hết danh sách dataset
+
+    this.datasetService.requestSearch(pagging, param)
+      .subscribe((resultPagging: ResultPagging) => {
+        console.log(resultPagging);
+      });
+  }
+
+  getValueProgress(progress: number, startTime: number, endTime: number) {
+    var ret: string;
+    ret = this.mapProgress[progress];
+
+    if (progress >= 1 && progress < 7) {
+      ret += ` (${progress}/7)`
+    }
+    return ret;
+  }
+
+  getStatusName(progress: number, startTime: number, endTime: number) {
+    var ret: string;
+    if (progress === 7) {
+      ret = 'Completed';
+    }
+    else {
+      ret = 'Running';
+    }
+    return ret;
+  }
+
+  getTimeProcessDataset(startTime: number, endTime: number) {
+    var ret: string;
+    var diff = endTime - startTime;
+    var minutes = Math.floor(diff / 60);
+    var hours = Math.floor(minutes / 60);
+    var days = Math.floor(hours / 24);
+    var seconds = diff - minutes * 60;
+
+    var strDays = days > 0 ? `${days}` + " days " : ""
+    var strHours = hours > 0 ? `${hours - 24 * days}` + " hours " : ""
+    var strMinutes = minutes > 0 ? `${minutes - 60 * hours}` + " minutes " : ""
+    var strSeconds = (minutes === 0 && hours === 0 && days === 0) ? `${seconds}` + " seconds " : ""
+
+    ret = strDays + strHours + strMinutes + strSeconds
+    return ret;
+  }
+
+  onBlurNameDataset() {
+    this.myStyle1 = {
+      'background-color': "#ffffc1"
+    }
+  }
+
+}

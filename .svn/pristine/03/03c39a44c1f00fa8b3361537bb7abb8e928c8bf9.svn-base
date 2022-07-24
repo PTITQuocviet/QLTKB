@@ -1,0 +1,49 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+
+import { environment } from "src/environments/environment";
+import { FeatureSetParamSearchParamModel } from "../model/feature-set-param-search-param.model";
+import { MethodSearchParamModel } from "../model/method-search-param.model";
+import { PaggingModel } from "../model/pagging.model";
+import { ResultPagging } from "../model/result-pagging.model";
+
+@Injectable({ providedIn: 'root' })
+export class MetaService {
+
+    baseURL: string;
+
+    constructor(
+        private http: HttpClient
+    ) {
+        this.baseURL = environment.baseURL;
+    }
+
+    requestSearchMethod(pagging: PaggingModel, searchParam: MethodSearchParamModel): Observable<ResultPagging> {
+        const url = new URL(this.baseURL + environment.apiMetaMethod);
+
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+
+        return this.http.get<ResultPagging>(url.href);
+    }
+
+    requestSearchFeatureSetParam(pagging: PaggingModel, searchParam: FeatureSetParamSearchParamModel): Observable<ResultPagging> {
+        const url = new URL(this.baseURL + environment.apiMetaFeatureParam);
+
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+
+        return this.http.get<ResultPagging>(url.href);
+    }
+}

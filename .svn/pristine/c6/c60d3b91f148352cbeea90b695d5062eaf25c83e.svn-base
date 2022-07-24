@@ -1,0 +1,21 @@
+#bg-login {
+    position: fixed;
+	width: 100%;
+}
+
+span.req {
+    color: red;
+}
+
+input.btn.btn-lg.btn-success.btn-block {
+    width: 80%;
+    margin: 5% 10%;
+    background: #00CCD6;
+    border-radius: 8px;
+}
+
+.card-header {
+    background: #FFFFFF;
+    /* border: 1px solid #F5F5F5; */
+    border-bottom: none;
+}

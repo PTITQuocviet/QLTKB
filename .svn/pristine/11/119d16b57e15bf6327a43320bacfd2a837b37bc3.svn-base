@@ -1,0 +1,26 @@
+.btn-secondary {
+    width: 100%;
+    /* margin-right: 5em; */
+    border-radius: 5px;
+    height: 2.5em;
+
+}
+/* .model{
+    Width :424px !important;
+    Height : 194px !important;
+    Top :234px !important;
+    Left :748px !important;
+} */
+button.delete {
+    width: 42px;
+    background: #ffffff;
+    border: none;
+}
+p {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.modal-header {
+    height: 15em;
+}

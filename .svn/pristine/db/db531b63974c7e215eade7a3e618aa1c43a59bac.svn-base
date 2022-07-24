@@ -1,0 +1,60 @@
+<button class="btn shadow-none btn-sm">
+    <img src=" ./assets/icon/outlined/editor/edit.svg" class="icon-sm icon-secondary" (click)="openModalEdit()">  
+</button>
+<ng-template #modalEdit let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit ItemRule</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Feature code<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="Featurecode" placeholder="U01.DB44">
+                </div>
+                <div>
+                    <label for="">Feature name</label>
+                    <input class="form-control" required ngModel name="Featurename" placeholder="MARITAL">
+                </div>
+                <div>
+                    <label for="">Schema</label>
+                    <input class="form-control" required ngModel name="Schema" placeholder="POCACB">
+                </div>
+                <div>
+                    <label for="">Table</label>
+                    <input class="form-control" required ngModel name="Table" placeholder="DNA_SG_PERS">
+                </div>
+                <div>
+                    <label for="">Expression</label>
+                    <input class="form-control" required ngModel name="Expression" placeholder="">
+                </div>
+                <div>
+                    <label for="">Condition</label>
+                    <input class="form-control" required ngModel name="Condition" placeholder="">
+                </div>
+                <div>
+                    <label for="">Subject field</label>
+                    <input class="form-control" required ngModel name="Subjectfield" placeholder="PERSNBR">
+                </div>
+                <div>
+                    <label for="">Timestamp field</label>
+                    <input class="form-control" required ngModel name="Timestampfield">
+                </div>
+                <div>
+                    <label for="" >Is Active </label>
+                    <select class="form-control"   >
+                       <option  class="text-success" value="1">Active</option>
+                        <option class="text-danger" value="0">Inactive</option>
+                    </select>
+                </div>  
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal1.close('create')">Save</button>
+        <button type="button" class="btn shadow-none btn-primary" (click)="modal1.close('Dismissed')">Cancel</button> -->
+    </div>
+</ng-template>

@@ -1,0 +1,60 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { FeatureSetSearchParamModel } from '../feature-set/feature-set-search-param.model';
+import { FeatureSetModel } from '../feature-set/feature-set.model';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { FeatureSetResultService } from './feature-set-result.service';
+
+@Component({
+  selector: 'app-feature-set-result',
+  templateUrl: './feature-set-result.component.html',
+  styleUrls: ['./feature-set-result.component.css']
+})
+export class FeatureSetResultComponent implements OnInit {
+
+  @ViewChild('formFilter') formFilter: NgForm;
+
+  featureSet: FeatureSetModel
+  /** Thời gian hiện tại để tính khoảng thời gian khi không có end time. Dạng unix mili giây */
+  currentDateUnix: number;
+
+  constructor(
+    private route: ActivatedRoute,
+    private featureSetResultService: FeatureSetResultService
+  ) { }
+
+  ngOnInit(): void {
+    this.featureSet = new FeatureSetModel();
+    this.featureSet.id = this.route.snapshot.params['idFeatureSet'];
+    this.onSearch();//search lần đầu
+  }
+
+  onSearch() {
+    let searchParam = new FeatureSetSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.projectId = this.route.snapshot.params['idProject'];//thông tin ngoài form
+    searchParam.featureSetId = this.route.snapshot.params['idFeatureSet'];//thông tin ngoài form
+    
+
+    this.currentDateUnix = (new Date()).getTime();
+    this.featureSetResultService.requestSearch(new PaggingModel(1), searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        const result = resultPagging.results[0];//chỉ lấy thông tin result của 1 feature set nên chỉ có 1 kết quả
+        if (result) {
+          this.featureSet = result;
+        } else {
+          //không có kết quả tìm kiếm
+          this.featureSet = new FeatureSetModel();
+          this.featureSet.id = this.route.snapshot.params['idFeatureSet'];
+        }
+      });
+  }
+}

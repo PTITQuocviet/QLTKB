@@ -1,0 +1,21 @@
+export class EvaluationModel {
+  file_id: string;
+  algorithm_code:string;
+  model: string;
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1: number;
+  rmse: number;
+  score: number;
+  rank: number;
+  createdUser: string;
+  mae: number;
+  createdTime: string;
+  status: number;
+
+
+  constructor() {
+    // this.mlType = new MachineLearningTypeModel();
+  }
+}

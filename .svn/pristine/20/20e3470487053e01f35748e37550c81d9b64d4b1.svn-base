@@ -1,0 +1,75 @@
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
+import { environment } from 'src/environments/environment';
+
+import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
+
+import { ResultPagging } from "../shared/model/result-pagging.model";
+import { PaggingService } from "../pagging/pagging.service";
+import { ModelModel } from "./model.model";
+import { ModelSearchParamModel } from "./model-search-param.model";
+import { PaggingModel } from "../shared/model/pagging.model";
+
+@Injectable({ providedIn: 'root' })
+export class ModelService {
+
+    /** chứa thông tin kết quả tìm kiếm và thông tin phân trang */
+    resultPagging = new BehaviorSubject<ResultPagging>(null);
+
+    baseURL: string;
+
+    constructor(
+        private http: HttpClient,
+        private paggingService: PaggingService
+    ) { 
+        this.baseURL = environment.baseURL + environment.apiModel;
+    }
+
+    /**Lấy thông tin chi tiết của 1 model theo id */
+    request(id: string) {
+        //TODO kiểm tra id hợp lệ
+        const url = new URL(environment.baseURL + environment.apiProject + '/' + id);
+
+        return this.http.get<ModelModel>(url.href);
+    }
+
+    /** tạo request tìm kiếm project */
+    requestSearch(pagging: PaggingModel, searchParam: ModelSearchParamModel) {//TODO thêm tham số là object chứa thông tin tìm kiếm
+        const url = new URL(this.baseURL.replace(':prj_id', searchParam.projectId));
+        
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+                && key !== 'projectId'//tham số này đã được cho vào path param
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+
+        if (!pagging.currentPage) {
+            pagging.currentPage = 1;
+        }
+
+        url.searchParams.set('start', ((pagging.currentPage - 1) * pagging.rowPerPage).toString());
+        url.searchParams.set('rows', pagging.rowPerPage.toString());
+
+        return this.http.get<ResultPagging>(url.href).pipe(
+            tap(
+                resultPagging => {
+                    pagging.countRow = resultPagging.numFound;
+                    pagging.currentPage = resultPagging.start / pagging.rowPerPage + 1;
+                    this.resultPagging.next(resultPagging);//cập nhật kết quả tìm kiếm
+                }
+            )
+        );
+    }
+
+    /** Tạo request tạo model */
+    requestCreate(models: ModelModel) {
+        const url = new URL(environment.baseURL + environment.apiProject);
+
+        return this.http.post<ResultPagging>(url.href, models);
+    }
+
+}

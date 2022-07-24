@@ -1,0 +1,99 @@
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { environment } from 'src/environments/environment';
+
+import { HttpClient } from '@angular/common/http';
+import { map, tap } from 'rxjs/operators';
+
+import { ResultPagging } from "../shared/model/result-pagging.model";
+import { PaggingService } from "../pagging/pagging.service";
+import { DatasetModel } from "./dataset.model";
+import { PaggingModel } from "../shared/model/pagging.model";
+import { DatasetSearchParamModel } from "./dataset-search-param.model";
+
+@Injectable({ providedIn: 'root' })
+export class DatasetService {
+
+    /** chứa thông tin kết quả tìm kiếm và thông tin phân trang */
+    resultPagging = new BehaviorSubject<ResultPagging>(null);
+    baseURL: string;
+
+    constructor(
+        private http: HttpClient
+    ) { 
+        this.baseURL = environment.baseURL + environment.apiDataset;
+    }
+
+    /** tạo request tìm kiếm dataset */
+    requestSearch(pagging: PaggingModel, searchParam: DatasetSearchParamModel): Observable<ResultPagging> {//TODO thêm tham số là object chứa thông tin tìm kiếm
+        //tham số tìm kiếm null là tìm tất cả project
+        const url = new URL(this.baseURL.replace(':prj_id', searchParam.projectId));
+
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+                && key !== 'projectId'
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+        
+        if (pagging) {//nếu có phân trang thì pipe
+            if (!pagging.currentPage) {
+                pagging.currentPage = 1;
+            }
+
+            url.searchParams.set('start', ((pagging.currentPage - 1) * pagging.rowPerPage).toString());
+            url.searchParams.set('rows', pagging.rowPerPage.toString());
+            return this.http.get<ResultPagging>(url.href).pipe(
+                map(resultPagging => {
+                    if (!resultPagging) {
+                        resultPagging = new ResultPagging();
+                        resultPagging.numFound = 0;
+                        resultPagging.start = 0;
+                    }
+                    return resultPagging;
+                })
+                , tap(
+                    resultPagging => {
+                        if (!resultPagging) {
+                            resultPagging = new ResultPagging();
+                            resultPagging.numFound = 0;
+                            resultPagging.start = 0;
+                        }
+                        pagging.countRow = resultPagging.numFound;
+                        pagging.currentPage = resultPagging.start / pagging.rowPerPage + 1;
+                        // this.paggingService.pagging.next(pagging);//cập nhật giá trị phân trang sau khi truy vấn tìm kiếm
+                        this.resultPagging.next(resultPagging);//cập nhật kết quả tìm kiếm
+                    }
+                )
+            );
+        }
+
+        url.searchParams.set('start', '0');
+        url.searchParams.set('rows', '500');//limit
+        return this.http.get<ResultPagging>(url.href);
+    }
+
+    /** Tạo request tạo dataset */
+    requestCreate(projectId: string, dataset: DatasetModel) {
+        const url = new URL((environment.baseURL + environment.apiDataset).replace(':prj_id', projectId));
+
+        return this.http.post<DatasetModel>(url.href, dataset);
+    }
+
+    /** Tạo request sửa dataset */
+    requestUpdate(dataset: DatasetModel) {
+        const url = new URL(environment.baseURL + environment.apiDataset + '/' + dataset.id);
+
+        return this.http.put<DatasetModel>(url.href, dataset);
+    }
+
+    /** Tạo request xóa dataset */
+    requestDelete(projectId: string, datasetId: string) {
+        const url = new URL((environment.baseURL + environment.apiDataset + '/:id')
+            .replace(':prj_id', projectId).replace(':id', datasetId));
+
+        return this.http.delete<ResultPagging>(url.href);
+    }
+}

@@ -1,0 +1,32 @@
+import { Component } from '@angular/core';
+import { LoginService } from './login/login.service';
+import { SidebarService } from './sidebar/sidebar.service';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+
+  loggedIn = false;
+  sidebarCollapsed: boolean = false;//đánh dấu ẩn hiện side bar
+  constructor(private loginService: LoginService,
+    private sidebarService: SidebarService
+    ) { }
+
+  ngOnInit() {
+
+    this.sidebarService.sidebarCollapsed.subscribe((isCollapsed) => {
+      this.sidebarCollapsed = isCollapsed;
+    });
+    this.loginService.autoLogin();
+
+    this.loginService.user.subscribe(user => {
+      if (user) {
+        this.loggedIn = true;
+      } else {
+        this.loggedIn = false;
+      }
+    });
+  }
+}

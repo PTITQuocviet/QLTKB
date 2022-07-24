@@ -1,0 +1,15 @@
+export class User {
+
+    // private _token: string;
+    // private _expirationAt: number;//đơn vị là ms
+    // private issuedAt: number;
+  //fullname, status: number , description: public.
+     username:string;
+    // public username: string
+      fullname: string;
+      status: number;
+      description: string;
+    constructor(
+     // public username: string  //thông tin có thể lấy từ token
+    ) { }
+  }

@@ -1,0 +1,8 @@
+export class FeatureSetResultModel {
+
+    name: string;//feature name
+    value: string;//
+    ranking: number;
+    isSelected: boolean;
+    
+  }

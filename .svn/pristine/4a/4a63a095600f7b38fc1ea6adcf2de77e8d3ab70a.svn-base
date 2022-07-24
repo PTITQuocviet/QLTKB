@@ -1,0 +1,25 @@
+.btn-secondary {
+    width: 100%;
+    margin-right: 5em;
+    border-radius: 5px;
+    height: 2.5em;
+
+}
+button.delete {
+    width: 42px;
+    background: #ffffff;
+    border: none;
+}
+button.Success{
+    background: #00CCD6;
+}
+p {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+.modal-header {
+    height: 15em;
+}
+.Success{
+    width: 20em;
+}

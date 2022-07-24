@@ -1,0 +1,128 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="row m-2">
+            <div class="mr-auto d-flex">
+                <h2>Quản lý sinh viên</h2>
+                <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                    style="margin: 0.8rem">
+            </div>
+            <div>
+                <button [attr.hidden]="isAttendance ? null : ''" type="button"
+                    class="btn btn-sm shadow-none btn-secondary m-1" (click)="isAttendance=!isAttendance;">
+                    Điểm danh
+                </button>
+                <button [attr.hidden]="isAttendance ? '' : null" type="button"
+                    class="btn btn-sm shadow-none btn-secondary m-1" (click)="onSave()">
+                    Lưu
+                </button>
+                <button [attr.hidden]="isAttendance ? null : ''" type="button"
+                    class="btn btn-sm shadow-none btn-secondary m-1"
+                    (click)="isEditPont=!isEditPont; isAttendance=!isEditPont">
+                    Sửa điểm
+                </button>
+            </div>
+        </div>
+
+        <div id="content" class="d-flex flex-row">
+            <div class="search-result">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mã SV</th>
+                                <th>Tên sinh viên</th>
+                                <th>Email</th>
+                                <th [attr.hidden]="isAttendance ? '' : null">Điểm danh</th>
+                                <th [attr.hidden]="isEditPont ? '' : null">Điểm chuyên cần</th>
+                                <th [attr.hidden]="isEditPont ? '' : null">Điểm giữa kỳ</th>
+                                <th [attr.hidden]="isEditPont ? '' : null">Điểm cuối kỳ </th>
+                                <th [attr.hidden]="isEditPont ? '' : null">Chức năng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let manageStudent of manageStudents, let i=index">
+                                <td>{{i+1}}</td>
+                                <td>{{manageStudent.studentId}}</td>
+                                <td>{{manageStudent.firstName + manageStudent.lastName}}</td>
+                                <td>{{manageStudent.email}}</td>
+                                <td [attr.hidden]="isAttendance ? '' : null">
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" [(ngModel)]="manageStudent.isAttend" />
+                                        </label>
+                                    </div>
+                                </td>
+                                <td [attr.hidden]="isEditPont ? '' : null">{{manageStudent.diligence}}</td>
+                                <td [attr.hidden]="isEditPont ? '' : null">{{manageStudent.middlePoint}}</td>
+                                <td [attr.hidden]="isEditPont ? '' : null">{{manageStudent.finalPoint}}</td>
+                                <td [attr.hidden]="isEditPont ? '' : null">
+                                    <button class="btn shadow-none btn-sm" (click)="onpenModalEditPont(manageStudent)">
+                                        Sửa điểm
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /#page-content-wrapper -->
+<ng-template #modalEditPoint let-modal1>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Sửa điểm</h4>
+        <button id="btnCloseModalEdit" type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div style="border: solid 1px #E8E8E8;border-radius: 6px;">
+                <form #formCreate="ngForm">
+                    <table class="table form-group">
+                        <tbody>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm chuyên cần</th>
+                                <td>
+                                    <input class="form-control" required name="diligence"
+                                        [(ngModel)]="editPoint.diligence">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm kiểm tra</th>
+                                <td>
+                                    <input class="form-control" required name="middlePoint"
+                                        [(ngModel)]="editPoint.middlePoint">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="text-primary" style="width: 200px;">Điểm thi</th>
+                                <td>
+                                    <input class="form-control" required name="finalPoint"
+                                        [(ngModel)]="editPoint.finalPoint">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="mr-auto">
+            <button type="button" class="btn btn-sm btn-secondary" (click)="onSavePoint()">Lưu</button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-secondary" (click)=" modal1.dismiss('close')">
+                Hủy
+            </button>
+        </div>
+    </div>
+</ng-template>

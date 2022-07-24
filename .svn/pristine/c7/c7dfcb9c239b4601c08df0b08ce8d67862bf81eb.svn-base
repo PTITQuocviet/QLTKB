@@ -1,0 +1,99 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { ModelModel } from './model.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ModelService } from './model.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { PaggingService } from '../pagging/pagging.service';
+import { ModelSearchParamModel } from './model-search-param.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+
+@Component({
+  selector: 'app-model',
+  templateUrl: './model.component.html',
+  styleUrls: ['./model.component.css']
+})
+export class ModelComponent implements OnInit {
+
+  @ViewChild('formFilter') formFilter: NgForm;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+  @ViewChild('modalUploadItemRule', { static: true }) modalUploadItemRule: ElementRef;
+
+  mapModelStatusName = {
+    1: 'Wait',
+    2: 'Processing',
+    3: 'Completed',
+    99: 'Fail'
+  };
+
+  models: ModelModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter
+  closeModalResult = '';
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private paggingService: PaggingService,
+    private modelService: ModelService,
+    private modalService: NgbModal,
+  ) {
+
+  }
+
+  classString: string;
+
+  ngOnInit(): void {
+    this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+  }
+
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new ModelSearchParamModel();
+
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    searchParam.projectId = this.route.snapshot.params['idProject'];//thông tin ngoài form
+    this.modelService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.models = resultPagging.results;
+      });
+  }
+
+  onClearFilterForm() {
+    this.formFilter.reset();
+  }
+
+
+  onCreateModel() {
+    this.router.navigate(['project', this.route.snapshot.params['idProject'], 'model', 'create']);
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+
+  onSaveModel(form: NgForm) {
+    //TODO nếu tạo lỗi thì không đóng modal
+    const model = new ModelModel();
+
+  }
+
+}

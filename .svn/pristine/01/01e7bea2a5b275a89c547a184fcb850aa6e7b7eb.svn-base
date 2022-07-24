@@ -1,0 +1,122 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { ItemRuleModel } from './item-rule.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ItemRuleService } from './item-rule.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { PaggingService } from '../pagging/pagging.service';
+import { ItemRuleSearchParamModel } from './item-rule-search-param.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+
+@Component({
+  selector: 'app-item-rule',
+  templateUrl: './item-rule.component.html',
+  styleUrls: ['./item-rule.component.css']
+})
+export class ItemRuleComponent implements OnInit {
+
+  datasets:ItemRuleModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter
+  closeModalResult = '';
+
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+  @ViewChild('modalUploadItemRule', { static: true }) modalUploadItemRule: ElementRef;
+  @ViewChild('formFilter') formFilter: NgForm;
+  itemRules: ItemRuleModel[] = [];
+
+  constructor(private route: ActivatedRoute,
+      private itemRuleService: ItemRuleService,
+      private modalService: NgbModal,
+      private paggingService: PaggingService      
+    ){
+    
+  }
+
+  classString:string;
+
+  ngOnInit(): void {
+    this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+
+    const dataset = new ItemRuleModel();
+    dataset.stt = '1';
+    dataset.id = '000001';
+    dataset.name = 'ITR - User behavior';
+    dataset.info = 'Active';
+    dataset.createdUser = 'FIS IS';    
+
+    this.datasets.push(dataset);
+    console.log('this.datasets', this.datasets);
+
+    this.datasets.forEach(element => {
+      console.log('element', element);
+      if (element.info === 'Active') {
+        this.classString = 'text-success'        
+      }else{
+        this.classString = 'text-danger'
+      }
+    });
+  }
+
+  // onSearch(id: String) {
+    
+  // };
+
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    let searchParam = new ItemRuleSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    //searchParam.id = this.route.snapshot.params['id'];//thông tin ngoài form
+    //this.currentDateUnix = (new Date()).getTime();
+    this.itemRuleService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.itemRules = resultPagging.results;
+      });
+  }
+
+  /**
+   * Mở modal Upload item.
+   */
+   openModalUploadItemRule() {
+    this.modalService.open(this.modalUploadItemRule, {})
+    .result
+    .then(
+      (result) => {//Closed
+        console.log(result);
+        if (result === 'create') {//không dùng
+          console.log(this.formCreate);
+        }
+      }, (reason) => {//Dismissed
+        this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+        console.log(this.closeModalResult);
+      });
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+   
+   onSaveItemRule(form: NgForm) {
+    //TODO nếu tạo lỗi thì không đóng modal
+    const itemRule = new ItemRuleModel();   
+    
+  }
+
+}

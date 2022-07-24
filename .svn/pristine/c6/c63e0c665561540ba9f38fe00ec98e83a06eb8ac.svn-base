@@ -1,0 +1,9 @@
+initial.context.factory=com.sun.jndi.ldap.LdapCtxFactory
+
+#bypass=false
+bypass=true
+nor.provider.url=ldap://10.15.10.135:389
+nor.security.authentication=simple
+nor.security.principal=CN=fdp1,OU=fdp,DC=fis,DC=local
+nor.security.credentials=123456a@
+nor.dc=DC=fis,DC=local

@@ -1,0 +1,56 @@
+<div class="d-flex">
+    <div class="mr-auto p-2">
+        <p *ngIf="paggingModel.currentPage * paggingModel.rowPerPage < paggingModel.countRow" class="text-pagging">
+            Showing {{(paggingModel.currentPage - 1) * paggingModel.rowPerPage + 1}} to
+            {{paggingModel.currentPage * paggingModel.rowPerPage}} of {{paggingModel.countRow}}
+            entries</p>
+        <p *ngIf="paggingModel.currentPage * paggingModel.rowPerPage > paggingModel.countRow" class="text-pagging">
+            Showing {{(paggingModel.currentPage - 1) * paggingModel.rowPerPage + 1}} to
+            {{paggingModel.countRow}} of {{paggingModel.countRow}}
+            entries</p>
+    </div>
+    <div class="p-2" style="margin-right: 60px;">
+        <!-- TODO dùng cách khác margin-right: 60px; -->
+        <nav>
+            <ul class="pagination">
+                <li class="page-item">
+                    <a *ngIf="paggingModel.currentPage > 1" class="page-link" (click)="pageAction('<<')">
+                        <span>&#8810;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a *ngIf="paggingModel.currentPage > 1" class="page-link" (click)="pageAction('<')">
+                        <img src="./assets/svg/navbar/left.svg" alt=""></a>
+                </li>
+                <li class="page-item" *ngFor="let item of [].constructor(numPaggingButton); let i = index">
+                    <a *ngIf="minPage + i <= paggingModel.countPage" (click)="pageAction(minPage + i)"
+                        [ngClass]="{'btn-selected': paggingModel.currentPage === minPage + i}"
+                        class="page-link">{{minPage + i}}</a>
+                </li>
+                <li class="page-item">
+                    <a *ngIf="paggingModel.currentPage < paggingModel.countPage" class="page-link"
+                        (click)="pageAction('>')">
+                        <img src="./assets/svg/navbar/right.svg" alt=""></a>
+                </li>
+                <li class="page-item">
+                    <a *ngIf="paggingModel.currentPage < paggingModel.countPage" (click)="pageAction('>>')"
+                        class="page-link all-next">
+                        <span>&#8811;</span>
+                    </a>
+                </li>
+
+                <li class="page-item">
+                    <div class="btn-group " ngbDropdown role="group">
+                        <button class="btn btn-outline-success btn-pagging"
+                            ngbDropdownToggle>{{paggingModel.rowPerPage}}/Page</button>
+                        <div class="dropdown-menu" ngbDropdownMenu>
+                            <button (click)="onChangeRowPerPage(10)" ngbDropdownItem>10/Page</button>
+                            <button (click)="onChangeRowPerPage(20)" ngbDropdownItem>20/Page</button>
+                            <button (click)="onChangeRowPerPage(50)" ngbDropdownItem>50/Page</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

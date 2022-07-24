@@ -1,0 +1,61 @@
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-modelYesNo',
+  templateUrl: './model-yes-no.component.html',
+  styleUrls: ['./model-yes-no.component.css']
+})
+
+export class ModelYesNoComponent implements OnInit {
+
+  closeModalResult = '';
+
+  @ViewChild('modalDelete', { static: true }) modalDelete: ElementRef;
+  @ViewChild('modalSuccess', { static: true }) modalSuccess: ElementRef;
+
+  @Input('title') title: string;// lấy title tuqf page cần dùng
+  @Input('message') message: string;// lấy message tuqf page cần dùng
+  @Input('inputID') inputID: number;// lấy id  cần xóa
+  @Output() btnCode = new EventEmitter<{ btnCode: number, ID: number}>();//code list, 1: yes, 2: no, 3: close
+  // @Output() ID = new EventEmitter<{ ID: number}>();
+  constructor(
+    private modalService: NgbModal,
+  ) {
+
+  }
+
+  ngOnInit() { }
+
+  openModal() {
+    this.modalService.open(this.modalDelete, {})
+      .result
+      .then(
+        (result) => {//Closed
+          // console.log(result);
+          if (result === 'yes') {
+            // console.log(this.formCreate);
+            this.btnCode.emit({btnCode: 1, ID: this.inputID });
+            this.modalService.open(this.modalSuccess, {})
+          } else if (result === 'no') {
+            this.btnCode.emit({btnCode: 2, ID: this.inputID});
+          }
+        }, (reason) => {//Dismissed
+          // this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          // console.log(this.closeModalResult);
+          this.btnCode.emit({btnCode: 3, ID: this.inputID});
+        });
+  }
+
+  // private getDismissModalReason(reason: any): string {
+  //   if (reason === ModalDismissReasons.ESC) {
+  //     return 'by pressing ESC';
+  //   } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+  //     return 'by clicking on a backdrop';
+  //   } else {
+  //     return `with: ${reason}`;
+  //   }
+  // }
+
+}

@@ -1,0 +1,162 @@
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
+import { ItemRuleModel } from './item-rule.model';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { ItemRuleService } from './item-rule.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { PaggingService } from '../pagging/pagging.service';
+import { ItemRuleSearchParamModel } from './item-rule-search-param.model';
+import { ResultPagging } from '../shared/model/result-pagging.model';
+import { UtilService } from '../shared/util.service';
+
+@Component({
+  selector: 'app-item-rule',
+  templateUrl: './item-rule.component.html',
+  styleUrls: ['./item-rule.component.css']
+})
+export class ItemRuleComponent implements OnInit {
+
+  datasets: ItemRuleModel[] = [];
+  isCollapsedFilter = false;//trạng thái mở của khung filter
+  closeModalResult = '';
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentDateUnix: number;
+  @ViewChild('formCreate', { static: true }) formCreate: ElementRef;
+  @ViewChild('modalUploadItemRule', { static: true }) modalUploadItemRule: ElementRef;
+  @ViewChild('formFilter') formFilter: NgForm;
+  itemRules: ItemRuleModel[] = [];
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private itemRuleService: ItemRuleService,
+    private modalService: NgbModal,
+    private paggingService: PaggingService,
+    private utilService: UtilService
+  ) {
+
+  }
+
+  classString: string;
+
+  ngOnInit(): void {
+    this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+
+    const dataset = new ItemRuleModel();
+    dataset.stt = '1';
+    dataset.id = '000001';
+    dataset.name = 'ITR - User behavior';
+    dataset.info = 'Active';
+    dataset.createdUser = 'FIS IS';
+
+    this.datasets.push(dataset);
+    console.log('this.datasets', this.datasets);
+
+    this.datasets.forEach(element => {
+      console.log('element', element);
+      if (element.info === 'Active') {
+        this.classString = 'text-success'
+      } else {
+        this.classString = 'text-danger'
+      }
+    });
+  }
+
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+    let searchParam = new ItemRuleSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+
+    //searchParam.id = this.route.snapshot.params['id'];//thông tin ngoài form
+    //this.currentDateUnix = (new Date()).getTime();
+    this.itemRuleService.requestSearch(pagging, searchParam)
+      .subscribe((resultPagging: ResultPagging) => {
+        this.itemRules = resultPagging.results;
+      });
+  }
+
+  onClearFilterForm() {
+    this.formFilter.reset();
+  }
+
+  /**
+   * change tab
+   * @param tabName tab name
+   */
+  onChangeTab(tabName: string) {
+    if (tabName === 'dataset') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'dataset']);
+    } else if (tabName === 'item-rule') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'item-rule-set']);
+    } else if (tabName === 'raw-data') {
+      this.router.navigate(['project', this.route.snapshot.params['idProject'], 'raw-data']);
+    }
+  }
+
+  // xử lý export dữ liệu
+  onExport() {
+    let searchParam = new ItemRuleSearchParamModel();
+    //TODO validate form và xử lý thêm các loại ở form
+    if (!this.formFilter) {
+      searchParam = searchParam.build(null);
+    } else {
+      searchParam = searchParam.build(this.formFilter.form.value);
+    }
+    searchParam.projectId = this.route.snapshot.params['idProject'];//thông tin ngoài form
+    this.currentDateUnix = (new Date()).getTime();
+    this.itemRuleService.requestSearchExport(searchParam)
+      .subscribe((result: string) => {
+        let filename = 'export' + this.utilService.dateToStringSimple(new Date(), 'yyyy-mm-dd_hh-mi-ss') + '.csv';
+        this.utilService.saveFile(result, filename);
+      });
+  }
+
+
+
+  /**
+   * Mở modal Upload item.
+   */
+  openModalUploadItemRule() {
+    this.modalService.open(this.modalUploadItemRule, {})
+      .result
+      .then(
+        (result) => {//Closed
+          console.log(result);
+          if (result === 'create') {//không dùng
+            console.log(this.formCreate);
+          }
+        }, (reason) => {//Dismissed
+          this.closeModalResult = `Dismissed ${this.getDismissModalReason(reason)}`;
+          console.log(this.closeModalResult);
+        });
+  }
+
+  private getDismissModalReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
+  }
+
+
+  onSaveItemRule(form: NgForm) {
+    //TODO nếu tạo lỗi thì không đóng modal
+    const itemRule = new ItemRuleModel();
+
+  }
+
+}

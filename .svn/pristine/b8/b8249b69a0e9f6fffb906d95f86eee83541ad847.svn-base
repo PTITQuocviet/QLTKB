@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/DSToolkit">
+  <Resource auth="Container"
+            defaultAutoCommit="false"
+            description="Connection to MySQL database"
+            driverClassName="com.mysql.jdbc.Driver"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            global="jdbc/MySQL" maxIdle="2" maxTotal="10" 
+            maxWaitMillis="5000" minIdle="2" name="jdbc/MySQL"
+            password="123456" removeAbandonedTimeout="300" 
+            type="javax.sql.DataSource" url="jdbc:mysql://127.0.0.1:3306/dst" username="root"/>
+</Context>

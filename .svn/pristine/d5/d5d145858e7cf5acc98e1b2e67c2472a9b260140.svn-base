@@ -1,0 +1,56 @@
+.btn-selected {
+    background-color: blue;
+}
+
+.text-pagging {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 22px;
+    /* identical to box height, or 157% */
+    /* Text Colors/Body Text */
+    color: #8C8C8C;
+    margin-top: 3%
+}
+
+.mr-auto.p-2 {
+    margin-top: 14px;
+}
+
+.ml-auto.p-2 {
+    margin-left: 48%;
+    /* margin-right: 22px; */
+}
+
+ul.pagination {
+    margin-top: 3%;
+}
+
+a.page-link {
+    color: #8C8C8C;
+}
+
+li {
+    margin-right: 2%;
+}
+
+button.dropdown-toggle.btn.btn-outline-success.btn-pagging:focus {
+    background-color: blue;
+}
+
+button.dropdown-toggle.btn.btn-outline-success.btn-pagging:hover {
+    background-color: blue;
+}
+
+button.dropdown-toggle.btn.btn-outline-success.btn-pagging {
+    color: #262626;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+    border: 1px solid #E8E8E8;
+    box-sizing: border-box;
+    border-radius: 5px
+}

@@ -1,0 +1,14 @@
+import { DatasetModel } from "../dataset/dataset.model";
+import { ItemRuleModel } from "../item-rule/item-rule.model";
+import { ProjectModel } from "../project/project.model";
+
+export class DataProfileModel {
+
+    project: ProjectModel;
+    dataset: DatasetModel;
+    itemRule: ItemRuleModel;
+    featureName: string;
+    dataType: string;
+    countValid: number;
+
+}

@@ -1,0 +1,96 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { DatasetSearchParamModel } from '../dataset/dataset-search-param.model';
+import { DatasetModel } from '../dataset/dataset.model';
+import { DatasetService } from '../dataset/dataset.service';
+import { PaggingService } from '../pagging/pagging.service';
+import { PaggingModel } from '../shared/model/pagging.model';
+import { DataConfigModel } from './data-config.model';
+import { DataProfileModel } from './data-profile.model';
+import { DatasetDetailSearchParamModel } from './dataset-detail-search-param.model';
+import { DatasetDetailService } from './dataset-detail.service';
+
+@Component({
+  selector: 'app-dataset-detail',
+  templateUrl: './dataset-detail.component.html',
+  styleUrls: ['./dataset-detail.component.css']
+})
+export class DatasetDetailComponent implements OnInit {
+
+  mapStage = {
+    1: 'Clean',
+    2: 'Fill',
+    3: 'Scale',
+    4: 'Encode',
+    5: 'Split',
+    6: 'Balance',
+    7: 'Completed'
+  };
+
+  paggingSubscription: Subscription;
+  minSTT: number = 1;//số thứ tự nhỏ nhất. Cần cập nhật khi thay đổi trang
+  currentStage: number = 1;//xác định tab stage đang chọn
+  dataset: DatasetModel = new DatasetModel();
+  dataProfiles: DataProfileModel[] = [];
+  dataConfig: DataConfigModel = new DataConfigModel();
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private paggingService: PaggingService,
+    private datasetDetailService: DatasetDetailService,
+    private datasetService: DatasetService
+  ) { }
+
+  ngOnInit(): void {
+    this.paggingSubscription = this.paggingService.pagging.subscribe((paggingModel) => {
+      this.onSearch(paggingModel);
+    });
+    const param = new DatasetSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    param.datasetId = this.route.snapshot.params['idDataset'];
+    this.datasetService.requestSearch(null, param).subscribe(resultPagging => {
+      this.dataset = resultPagging.results[0];
+    });
+  }
+
+  ngOnDestroy() {
+    this.paggingSubscription.unsubscribe();
+  }
+
+  onSearch(pagging: PaggingModel) {
+    if (!pagging) {//lấy giá trị mặc định
+      pagging = this.paggingService.pagging.getValue();
+    }
+    this.minSTT = (pagging.currentPage - 1) * pagging.rowPerPage + 1;
+
+    const param = new DatasetDetailSearchParamModel();
+    param.projectId = this.route.snapshot.params['idProject'];
+    param.datasetId = this.route.snapshot.params['idDataset'];
+    param.stage = this.currentStage;
+
+    this.datasetDetailService.requestSearchDataConfig(pagging, param).subscribe(result => {
+      this.dataConfig = result.results[0];
+    });
+    this.datasetDetailService.requestSearchDataProfilling(pagging, param).subscribe(result => {
+      this.dataProfiles = result.results;
+    });
+  }
+
+  /**
+   * Thay đổi tab stage.
+   * @param stage mã số stage.
+   */
+  onChangeCurrentStage(stage: number) {
+    this.currentStage = stage;
+    this.onSearch(null);
+  }
+
+  /**
+   * Quay trở về màn hình danh sách dataset
+   */
+  onManageDataset() {
+    this.router.navigate(['project', this.route.snapshot.params['idProject'], 'dataset']);
+  }
+}

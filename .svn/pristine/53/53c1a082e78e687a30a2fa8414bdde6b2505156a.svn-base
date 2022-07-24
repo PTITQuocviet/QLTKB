@@ -1,0 +1,83 @@
+<div>
+    <img id="bg-login" src="./assets/svg/sidebar/Background.svg" alt="">
+</div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-4" style="margin-top: 200px;">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header">
+                    <div style="height: 0px;">
+                        <img id="logo" src="./assets/svg/sidebar/Logo.svg" alt="" style="margin-top: -142px;">
+                    </div>
+                    <h3 class="text-center font-weight-light my-4"><b>Đăng nhập</b></h3>
+                </div>
+                <div class="card-body">
+                    <form #loginForm="ngForm" (ngSubmit)="onSubmitLogin(loginForm)">
+                        <div class="col-lg-12 form-group">
+                            <label class="small mb-1" for="username">Tên đăng nhập</label><span class="req"> * </span>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="text" name="username" id="username" ngModel required autofocus>
+                                <!-- <div class="input-group-append">
+                                    <span class="input-group-text">@fis.com</span>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <label class="small mb-1" for="password">Mật khẩu</label><span class="req"> * </span>
+                            <input class="form-control" type="password" name="password" id="password" ngModel required minlength="1">
+                        </div>
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <!-- <button class="btn btn-primary" type="submit" [disabled]="!loginForm.valid">Đăng
+                                nhập</button> -->
+                            <input class="btn btn-lg btn-secondary btn-block" type="submit" value="Login">
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div *ngIf="isLoading">
+                        <app-loading-spinner></app-loading-spinner>
+                    </div>
+                    <div class="alert alert-danger" *ngIf="error">
+                        <p>{{ error }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- code test date time picker -->
+<!-- <div class="container">
+    <h1> Reactive Forms Datetime Picker </h1>
+    <form>
+        <div class="row" [formGroup]="formGroup">
+            <div class="form-group col-sm-6">
+                <label for="activeEndDate">Active End Date</label>
+                <app-date-time-picker formControlName="activeEndDate" name="activeEndDate"></app-date-time-picker>
+                <div class="text-danger" *ngIf="formGroup.get('activeEndDate').errors?.required">Active End Date is
+                    required.</div>
+                <div class="text-danger"
+                    *ngIf="formGroup.get('activeEndDate')?.value && formGroup.get('activeEndDate')?.errors?.isValid">
+                    Active End Date must be a valid date.</div>
+
+            </div>
+        </div>
+    </form>
+
+    <h1> NgModel Date</h1>
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label for="activeEndDate">Active End Date</label>
+            <app-date-time-picker [(ngModel)]="dateModel" name="activeEndDate"></app-date-time-picker>
+        </div>
+    </div>
+
+    <h1> NgModel Date String</h1>
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label for="activeEndDate">Active End Date</label>
+            <app-date-time-picker [(ngModel)]="stringDateModel" name="activeEndDate"></app-date-time-picker>
+
+        </div>
+    </div>
+</div> -->

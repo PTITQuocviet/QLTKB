@@ -1,0 +1,87 @@
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { map, tap } from "rxjs/operators";
+import { environment } from "src/environments/environment";
+import { HttpClient } from '@angular/common/http';
+
+import { ResultPagging } from "../shared/model/result-pagging.model";
+import { PaggingModel } from "../shared/model/pagging.model";
+import { UserSearchParamModel } from "./user-search-param.model";
+import { UserModel } from "./user.model";
+
+@Injectable({ providedIn: 'root' })
+export class UserService {
+
+    /** chứa thông tin kết quả tìm kiếm và thông tin phân trang */
+    resultPagging = new BehaviorSubject<ResultPagging>(null);
+
+    baseURL: string;
+
+    constructor(
+        private http: HttpClient
+    ) {
+        this.baseURL = environment.baseURL + environment.apiUser;
+    }
+
+    /** tạo request tìm kiếm  */
+    requestSearch(pagging: PaggingModel, searchParam: UserSearchParamModel): Observable<ResultPagging> {
+        //tham số tìm kiếm null là tìm tất cả user
+        const url = new URL(this.baseURL);
+        url.searchParams.set('start', ((pagging.currentPage - 1) * pagging.rowPerPage).toString());
+        url.searchParams.set('rows', pagging.rowPerPage.toString());
+
+        // lấy thông tin ở form để thực hiện request search
+        for (const [key, value] of Object.entries(searchParam)) {
+            if (value
+                && value.length > 0
+            ) {
+                url.searchParams.set(key, value);
+            }
+        }
+
+        return this.http.get<ResultPagging>(url.href).pipe(
+            map(resultPagging => {
+                if (!resultPagging) {
+                    resultPagging = new ResultPagging();
+                    resultPagging.numFound = 0;
+                    resultPagging.start = 0;
+                }
+                return resultPagging;
+            })
+            , tap(
+                resultPagging => {
+                    if (!resultPagging) {
+                        resultPagging = new ResultPagging();
+                        resultPagging.numFound = 0;
+                        resultPagging.start = 0;
+                    }
+                    pagging.countRow = resultPagging.numFound;
+                    pagging.currentPage = resultPagging.start / pagging.rowPerPage + 1;
+                    // this.paggingService.pagging.next(pagging);//cập nhật giá trị phân trang sau khi truy vấn tìm kiếm
+                    this.resultPagging.next(resultPagging);//cập nhật kết quả tìm kiếm
+                }
+            )
+        )
+    }
+    
+    /**Lấy thông tin chi tiết của 1 user theo id */
+    request(id: number) {
+        //TODO kiểm tra id hợp lệ
+        const url = new URL(this.baseURL + '/' + id);
+
+        return this.http.get<UserModel>(url.href);
+    }
+    /** Tạo request sửa user */
+    requestUpdate(user: UserModel) {
+        const url = new URL(this.baseURL + '/' + user.id);
+
+        return this.http.put<UserModel>(url.href, user);
+    }
+
+    /** Tạo request xóa project */
+    requestDelete(user: UserModel) {
+        const url = new URL(this.baseURL + '/' + user.id);
+        return this.http.delete<UserModel>(url.href);
+    }
+
+}

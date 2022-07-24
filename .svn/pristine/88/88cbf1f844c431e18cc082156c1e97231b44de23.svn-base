@@ -1,0 +1,8 @@
+
+export class FeatureSetStatusModel {
+
+    startTime: number;
+    endTime: number;
+    status: number;//1: new, 2: running, 3: done,  99:error
+    
+}

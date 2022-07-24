@@ -1,0 +1,11 @@
+export class FeatureSetResultSearchParamModel {
+    
+  projectId: string;
+  featureSetId: string;
+  featureName: string;
+  ranking: number;
+  isSelected: number;
+  valueFrom: string;//TODO xác nhận kiểu dữ liệu
+  valueTo: string;
+
+}

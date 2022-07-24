@@ -1,0 +1,21 @@
+export class DatasetModel {
+  
+  id: string;
+  name: string;
+  progress: string;
+  startTime: number;
+  endTime: number;
+  createdUser: string;
+  status: string;
+  createdTime: number;
+  
+  constructor() {
+    this.createdTime = 1641381339;
+    this.createdUser = 'FIS';
+    this.startTime = 1641381339;
+    this.endTime = 1641391539;
+    
+  }
+
+
+}

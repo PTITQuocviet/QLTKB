@@ -1,0 +1,20 @@
+import { MachineLearningTypeModel } from "./machine-learning-type.model";
+
+export class ProjectModel {
+
+  id: string;
+  name: string;
+  description: string;
+  mlType: MachineLearningTypeModel;
+  status: number;
+  createdUser: string;
+  targetDate: number;
+  createdTime: number;
+
+  /** không có trong request và response */
+  statusName: string;
+
+  constructor() {
+    this.mlType = new MachineLearningTypeModel();
+  }
+}

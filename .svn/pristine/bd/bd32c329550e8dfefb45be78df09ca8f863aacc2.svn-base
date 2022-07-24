@@ -1,0 +1,20 @@
+import { DatasetModel } from "../dataset/dataset.model";
+import { FeatureSetModel } from "../feature-set/feature-set.model";
+
+export class ModelModel {
+
+  id: string;
+  model: string;
+  createdUser: string;
+  startTime: number;
+  endTime: number;
+  status: number;
+
+  featureSet: FeatureSetModel;
+  methodCode: string;
+  parameterRuns: [];
+
+  constructor() {//chỉ dùng để demo tạo dữ liệu
+    this.featureSet = new FeatureSetModel();
+  }
+}

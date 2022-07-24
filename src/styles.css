@@ -1,0 +1,427 @@
+/* css cho date time picker */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+/* @import '~open-iconic/font/css/open-iconic-bootstrap.css'; */
+/* You can add global styles to this file, and also import other style files */
+body {
+    overflow-x: hidden;
+}
+
+h4 {
+    /* Heading/H4 */
+    font-style: normal;
+    font-weight:600;
+    font-size: 24px;
+    line-height: 30px;
+
+    /* Text Colors/Title */
+    color: #262626;
+  }
+  h5 {
+    /* Heading/H5 */
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 26px;
+  
+    /* Text Colors/Title */
+    color: #262626;
+  }
+  th {
+    /* Heading/H7 */
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+  
+    /* Text Colors/Title */
+    color: #262626;
+  }
+  
+
+.table-active {
+    background: #F6F6F6;
+}
+
+/**color*/
+.color-primary {
+    /* Primary/Main Color */
+    color: #0043A5 !important;
+}
+.color-text {
+    color: #034dbd !important;
+}
+.color-notification {
+    color: #00c0c0;
+}
+
+/**text*/
+.text-primary {
+    color: #595959 !important;
+}
+.text-secondary {
+    color: #00CCD6 !important;
+}
+.text-title {
+    color: #262626 !important;
+}
+.text-muted {
+    color: #8C8C8C !important;
+}
+.text-success {
+    color: #2EB553 !important;
+}
+.text-danger {
+    color: #FF4D4F !important;
+}
+.text-warning {
+    color: #FA8C16 !important;
+}
+
+/* badge */
+.badge-primary {
+    background-color: #0043A5;
+}
+.badge-secondary {
+    background-color: #EEFCFD;
+    color: #00CCD6;
+}
+.badge-warning {
+    background: #FFF7E6;
+    color: #FA8C16;
+}
+.badge-success {
+    background: #EBFAEF;
+    color: #2EB553;
+}
+
+/**table*/
+.table-border {
+    border: 1px solid #E8E8E8;
+    border-radius: 5px;
+    width: inherit;
+    /* có 2 cách */
+    display: inline-block;
+    /* width:fit-content;
+    height:fit-content; */
+    /*nếu bảng có nội dung dài quá không word wrap được thì có scroll*/
+    overflow-x: auto;
+}
+
+table {
+    /* table-layout: fixed; */
+    background-color: white;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table>thead {
+    vertical-align: bottom;
+}
+
+table th {
+    background-color: #F6F6F6;
+    vertical-align: middle;
+    padding: .5rem .5rem;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+table td {
+    border-top: 1px solid #E8E8E8;
+    vertical-align: middle;
+    padding: .5rem .5rem;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+    /* xử lý tạm thời */
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+table>tbody.no-line td {
+    /* không đường kẻ */
+    border-width: 0px;
+    vertical-align: middle;
+    padding: .5rem .5rem;
+    box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
+}
+
+table>tbody {
+    vertical-align: inherit;
+}
+
+table>thead th:first-child {
+    border-top-left-radius: 5px;
+}
+
+table>thead th:last-child {
+    border-top-right-radius: 5px;
+}
+
+/* .table td {
+  vertical-align: middle;
+} */
+
+/*header giữ nguyên. https://stackoverflow.com/questions/21168521/table-fixed-header-and-scrollable-body*/
+
+.table-scroll {
+    overflow: auto;
+}
+
+.table-scroll thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/**button*/
+/* trạng thái mặc định  */
+/* khi di chuột đến btn */
+/* sau khi ấn chuột, giữ chuột*/
+.btn {
+    outline: none;
+    box-shadow: none !important;
+}
+
+.btn-secondary {
+    border: 0;
+    color: white;
+    background-color: #00ccd6 !important;
+}
+.btn-secondary:hover {
+    border: 0;
+    color: white;
+    background-color: #00AEB8 !important;
+}
+.btn-secondary:focus:active{
+    border: 0;
+    color: white;
+    background-color: #00A2AB !important;
+}
+
+.btn-info {
+    border: 0;
+    color: white;
+    background-color: #69c0ff !important;
+}
+.btn-info:hover,.btn-info:visited,.btn-info:link {
+    border: 0;
+    color: white;
+    background-color: #5CABE0 !important;
+}
+.btn-info:focus:active{
+    border: 0;
+    color: white;
+    background-color:#57A1D4 !important;
+}
+
+.btn-primary {
+    border: 0;
+    color: white;
+    background-color: #595959 !important;
+}
+.btn-primary:hover{
+    border: 0;
+    color: white;
+    background-color: #3B3B3B !important;
+}
+.btn-primary:focus:active {
+    border: 0;
+    color: white;
+    background-color: #2E2E2E !important;
+}
+
+.btn-success{
+    border: 0;
+    color: white;
+    background-color: #2eb553 !important;
+}
+.btn-success:hover{
+    border: 0;
+    color: white;
+    background-color: #269645 !important;
+}
+.btn-success:focus:active {
+    border: 0;
+    color: white;
+    background-color: #228A3F !important;
+}
+
+.btn-muted{
+    border: 0;
+    color: white;
+    background-color: #8c8c8c !important;
+}
+.btn-muted:hover{
+    border: 0;
+    color: white;
+    background-color: #6E6E6E !important;
+}
+.btn-muted:focus:active {
+    border: 0;
+    color: white;
+    background-color: #616161 !important;
+}
+
+.btn-warning {
+    border: 0;
+    color: white;
+    background-color: #ffc107 !important;
+}
+.btn-warning:hover {
+    border: 0;
+    color: white;
+    background-color: #DB7B14 !important;
+}
+.btn-warning:focus:active {
+    border: 0;
+    color: white;
+    background-color: #CF7413 !important;
+}
+
+/* xử lý class disabled */
+.btn.disabled, .btn.disabled:hover,.btn.disabled:active:focus {
+    border: 0;
+    color: white;
+    background-color: #8c8c8c !important;
+}
+/** icon, các icon svg bình thường */
+.icon-xs {
+    height: 12px;
+}
+.icon-sm {
+    height: 16px;
+}
+.icon-md {
+    height: 20px;
+}
+.icon-lg {
+    height: 24px;
+}
+
+/** màu các icon, cá icon mặc định là màu đen. Web để đổi màu icon từ đen thành màu khác: https://codepen.io/sosuke/pen/Pjoqqp */
+.icon-secondary {
+    /* #00CCD6 */
+    filter: invert(73%) sepia(46%) saturate(4220%) hue-rotate(135deg) brightness(94%) contrast(101%);
+}
+.icon-muted {
+    /* #8C8C8C */
+    filter: invert(84%) sepia(7%) saturate(8%) hue-rotate(39deg) brightness(89%) contrast(87%);
+}
+.icon-info {
+    /* #1890FF */
+    filter: invert(40%) sepia(49%) saturate(2395%) hue-rotate(193deg) brightness(102%) contrast(104%);
+}
+.icon-success {
+    /* #2EB553 */
+    filter: invert(48%) sepia(99%) saturate(395%) hue-rotate(84deg) brightness(101%) contrast(78%);
+}
+.icon-danger {
+    /* #FF4D4F */
+    filter: invert(27%) sepia(43%) saturate(1408%) hue-rotate(318deg) brightness(151%) contrast(109%);
+}
+.icon-warning {
+    /* #FA8C16 */
+    filter: invert(54%) sepia(96%) saturate(923%) hue-rotate(350deg) brightness(100%) contrast(97%);
+}
+.icon-white {
+    filter: invert(1);
+}
+.icon-black {
+    filter: brightness(0) saturate(100%);
+}
+
+/** khung nhập thông tin tìm kiếm, chiều ngang và chiều dọc*/
+.filter-panel {
+    /* Auto layout */
+    padding: 16px;
+    background: #FAFAFA;
+    border: 1px solid #E8E8E8;
+    box-sizing: border-box;
+    border-radius: 5px;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+}
+
+/* các tab chuyển trang */
+.tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.tab-bar-item {
+    display: block;
+    padding: .5rem 1rem;
+    margin-right: 0.5em;
+}
+
+.tab-bar .tab-bar-item {
+    margin-bottom: -1px;
+    border: 2px solid transparent;
+}
+
+.tab-bar .tab-bar-item.active {
+    background-color: #fff;
+    border: 2px solid;
+    border-color: #fff #fff #0043A5;
+}
+
+.tab-bar-item:focus a,
+.tab-bar-item:hover a {
+    text-decoration: none;
+}
+
+/* hình tròn để thể hiện step */
+.circle {
+    border-radius: 50%;
+    text-align: center;
+    border: 1px solid;
+    border-color: #1890FF;
+    /* có thể thêm class xác định kích thước */
+    width: 32px;
+    height: 32px;
+}
+.circle.circle-solid {
+    background-color: #1890FF;
+    color: white;
+}
+.circle.disabled {
+    border-color: #B8B8B8;
+    color: #B8B8B8;
+}
+.circle.circle-solid.disabled {
+    border-color: #B8B8B8;
+    background-color: #B8B8B8;
+    color: white;
+}
+.vertical {
+    border-left: 2px solid;
+    border-color: #1890FF;
+    margin-left: 1.5rem;
+    min-height: 2rem;
+}
+.vertical.disabled {
+    border-color: #E7E7E7;
+}
+
+/* sửa css khung filter đóng mở */
+.filter {
+    margin-left: 1.875em;
+    width: 25%;
+    transition: margin .5s ease-out;
+}
+.filter.filter-collapsed {
+    margin-right: -100rem;
+}
+.search-result{
+    width: 100%;
+    overflow: auto;
+}
+/* sweetaler2 */
+.swal2-confirm {
+    background-color: #00CCD6 !important;
+    box-shadow: none !important;
+}

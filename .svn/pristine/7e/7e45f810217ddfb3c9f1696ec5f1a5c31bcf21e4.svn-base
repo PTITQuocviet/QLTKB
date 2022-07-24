@@ -1,0 +1,277 @@
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="m-2">
+            <div class="d-flex flex-row">
+                <div class="mr-auto d-flex">
+                    <h2>Manage feature set</h2>
+                    <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                        style="margin: 0.8rem">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="openModalCreateFeatureSet()">
+                        New feature
+                        <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-row">
+                <div class='mr-auto'></div>
+                <div>
+                    <button *ngIf="!isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Collapse
+                        <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Expand
+                        <img src="./assets/icon/outlined/directional/arrow-left.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <div id="content" class="d-flex flex-row">
+            <div class="" style="width:100%">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Feature ID</th>
+                                <th>Dataset ID</th>
+                                <th>Method</th>
+                                <th>Parameter</th>
+                                <th>Time</th>
+                                <th>Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let featureSet of featureSets; let i = index">
+                                <td>
+                                    <div class="text-muted">{{minSTT + i}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureSet.id}}</div>
+                                    <span class="badge badge-secondary">{{featureSet.countFeature}} features</span>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureSet.dataset.id}}</div>
+                                    <div class="color-primary">{{featureSet.dataset.name}}</div>
+                                </td>
+                                <td>
+                                    <div class="text-muted">{{featureSet.method.methodName}}</div>
+                                </td>
+                                <td>
+                                    <div *ngFor="let param of featureSet.parameterRuns">
+                                        <div>
+                                            <span class="badge badge-secondary">
+                                                {{param.featureSetParameter.paramCode}} = {{param.paramValue}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div *ngIf="featureSet.featureSetStatus.endTime" class="text-muted">
+                                        <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                            class="icon-xs icon-muted">
+                                        {{(featureSet.featureSetStatus.endTime - featureSet.featureSetStatus.startTime)
+                                        |
+                                        interval}}
+                                    </div>
+                                    <div *ngIf="!featureSet.featureSetStatus.endTime" class="text-muted">
+                                        <img src=" ./assets/icon/outlined/application/fieldtime.svg"
+                                            class="icon-xs icon-muted">
+                                        {{(currentDateUnix - featureSet.featureSetStatus.startTime) | interval}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div [class.text-danger]="featureSet.featureSetStatus.status === 99"
+                                            [class.text-success]="featureSet.featureSetStatus.status === 3"
+                                            [class.text-warning]="featureSet.featureSetStatus.status === 2"
+                                            [class.text-secondary]="featureSet.featureSetStatus.status === 1"
+                                            class="color-primary">
+                                            <b>{{mapFeatureSetStatus[featureSet.featureSetStatus.status]}}</b>
+                                        </div>
+                                        <div class="d-flex">
+                                            <div class="text-muted mr-1">Create by </div><b
+                                                class="text-title">{{featureSet.createdUser}}</b>
+                                        </div>
+                                        <div class="text-muted">{{featureSet.createdTime | date:'dd/MM/yyyy hh:mm:ss'}}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn shadow-none btn-sm btn-info"
+                                        (click)="onManageFeatureSet(featureSet.id)">Manage
+                                        <img src="./assets/icon/outlined/application/select.svg"
+                                            class="icon-sm icon-white">
+                                    </button>
+                                    <button class="btn shadow-none btn-sm" (click)="onDeleteFeatureSet(featureSet.id)">
+                                        <img src="./assets/icon/outlined/editor/delete.svg" class="icon-sm icon-danger">
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <div class="filter" id="filter" [class.filter-collapsed]="isCollapsedFilter">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group" (keydown.enter)="onSearch(null)">
+                            <div>
+                                <label for="">ID</label>
+                                <input class="form-control" ngModel name="featureSetId">
+                            </div>
+                            <div>
+                                <label for="">Dataset ID</label>
+                                <input class="form-control" ngModel name="datasetId">
+                            </div>
+                            <div>
+                                <label for="">Dataset name</label>
+                                <input class="form-control" ngModel name="datasetName">
+                            </div>
+                            <div>
+                                <label for="">N neightbours</label>
+                                <input class="form-control" ngModel name="nNeightbours">
+                            </div>
+                            <div>
+                                <label for="">Discrete features</label>
+                                <select class="form-control" ngModel name="discreteFeature">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Copy</label>
+                                <select class="form-control" ngModel name="copy">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Random state</label>
+                                <select class="form-control" ngModel name="randomState">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div>Other</div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created by</label>
+                                <select class="form-control" ngModel name="createdUser">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="toanlh4">toanlh4</option>
+                                    <option value="chautm">chautm</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created at</label>
+                                <input class="form-control">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                        <div class="mr-auto">
+                            <button class="mr-auto d-flex" type="button"
+                                class="btn btn-sm shadow-none btn-secondary m-1" (click)="onSearch(null)">
+                                Search
+                                <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm shadow-none btn-secondary m-1" (click)="onClearFilterForm()">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalCreateFeatureSet let-modal1>
+    <div class="modal-header" style="background-color: #f6f6f6;">
+        <h4 class="modal-title" id="modal-basic-title">New feature set</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal1.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div class="mb-2">
+                    <label class="text-title">Choose an available dataset
+                        <span style="color: red;"> *</span>
+                    </label>
+                    <select class="form-control" required [(ngModel)]="modalSelectedDatasetId" name="datasetId"
+                        (change)="onChangeModalDataset($event)">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option *ngFor="let dataset of modalDatasets" [ngValue]="dataset.id">{{dataset.name}}</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <label class="text-title">Choose selection method
+                        <span style="color: red;"> *</span>
+                    </label>
+                    <select class="form-control" required [(ngModel)]="modalSelectedMethodId" name="methodId"
+                        (change)="onChangeModalMethod($event)">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option *ngFor="let method of modalMethods" [ngValue]="method.methodId">{{method.methodName}}
+                        </option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    Parameters
+                </div>
+
+                <!-- TODO lấy danh sách param từ DB -->
+                <div class="row" ngModelGroup="params">
+                    <div class="col-6 mb-2" *ngFor="let param of modalFeatureSetParams">
+                        <label class="text-title">{{param.paramCode}} <span style="color: red;"> *</span></label>
+                        <input class="form-control" ngModel [name]="param.paramId">
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label for="">
+                        <div class="text-title">Tag</div>
+                    </label>
+                    <select class="form-control" required ngModel name="tag">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option value="1" selected>1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-success" (click)="onCreateFeatureSet(formCreate)">Run</button>
+    </div>
+</ng-template>

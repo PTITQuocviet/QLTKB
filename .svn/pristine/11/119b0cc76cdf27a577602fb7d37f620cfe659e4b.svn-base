@@ -1,0 +1,206 @@
+<!-- /#sidebar-wrapper -->
+<!-- Page Content -->
+<div id="page-content-wrapper">
+    <app-navbar></app-navbar>
+    <div class="container-fluid">
+        <div id="content-header" class="m-2">
+            <div class="d-flex flex-row">
+                <div class="mr-auto d-flex">
+                    <h2>Manage item rule</h2>
+                    <img src="./assets/icon/outlined/suggested/question-circle.svg" class="icon-md icon-muted"
+                        style="margin: 0.8rem">
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="openModalUploadItemRule()">
+                        Upload new item rule
+                        <img src="./assets/icon/outlined/suggested/plus.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+            <div class="d-flex flex-row">
+                <div class='mr-auto'>
+                    <ul class="tab-bar">
+                        <li class="tab-bar-item" (click)="onChangeTab('dataset')">
+                            <div class="text-muted">Data set</div>
+                        </li>
+                        <li class="tab-bar-item active" (click)="onChangeTab('item-rule')">
+                            <div class="color-primary">Item rule</div>
+                        </li>
+                        <li class="tab-bar-item" (click)="onChangeTab('raw-data')">
+                            <div class="text-muted">Raw data</div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm shadow-none btn-primary m-1" (click)="onExport()">
+                        Export
+                        <img src="./assets/icon/outlined/application/download.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="!isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Collapse
+                        <img src="./assets/icon/outlined/directional/arrow-right.svg" class="icon-sm icon-white">
+                    </button>
+                    <button *ngIf="isCollapsedFilter" type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="isCollapsedFilter=!isCollapsedFilter">
+                        Expand
+                        <img src="./assets/icon/outlined/directional/arrow-left.svg" class="icon-sm icon-white">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div id="content" class="row">
+            <div [ngClass]="{'col-12' : isCollapsedFilter, 'col-9': !isCollapsedFilter}">
+                <div class="table-border">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Info</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let itemRule of itemRules; let i = index">
+                                <td>
+                                    <div class="text-muted">{{minSTT + i}}</div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="text-muted">{{itemRule.id}}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div class="color-primary">{{itemRule.name}}</div>
+                                        <div class="color-notification" style="float: left; margin-top: 10px;">
+                                            <span
+                                                style="background-color: rgb(228 253 255 / 56%);padding: 3px 10px;border-radius: 5px;font-size: small;font-weight: 500;">3
+                                                Features</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <div [ngClass]="classString"><b>Active</b></div>
+                                        <div class="text-muted">Created by: <span
+                                                style="color: rgb(0, 0, 0);font-weight: bold;">{{itemRule.createdUser}}</span>
+                                        </div>
+                                        <div class="text-muted">01-01-2022 10:20:17</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button class="btn shadow-none btn-sm">
+                                            <img src=" ./assets/icon/outlined/application/download.svg"
+                                                class="icon-md icon-secondary mr-4">
+                                            <img src=" ./assets/icon/outlined/editor/delete.svg"
+                                                class="icon-md icon-danger">
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <app-pagging></app-pagging>
+            </div>
+            <!-- search -->
+            <div [attr.hidden]="isCollapsedFilter ? '' : null" class="col-3">
+                <div class="filter-panel" style="background-color: #FAFAFA;">
+                    <form #formFilter="ngForm">
+                        <div class="form-group" (keydown.enter)="onSearch(null)">
+                            <div>
+                                <label for="">ID</label>
+                                <input class="form-control" ngModel name="id">
+                            </div>
+                            <div>
+                                <label for="">Name</label>
+                                <input class="form-control" ngModel name="name">
+                            </div>
+                            <div>
+                                <label for="">Item rule source</label>
+                                <select class="form-control" ngModel name="mlType">
+                                    <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                                    <option value="1" selected>Rule source 01</option>
+                                    <option value="2">Rule source 02</option>
+                                    <option value="3">Rule source 03</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Status</label>
+                                <select class="form-control" ngModel name="status">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="">Created by</label>
+                                <select class="form-control" ngModel name="createdUser">
+                                    <!-- TODO dùng api lấy thông tin danh sách -->
+                                    <option value="fisis">FIS IS</option>
+                                    <option value="tester">Tester</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" class="btn btn-sm shadow-none btn-primary m-1" (click)="onSearch(null)">
+                        Search
+                        <img src="./assets/icon/outlined/application/search.svg" class="icon-sm icon-white">
+                    </button>
+                    <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                        (click)="onClearFilterForm()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /#page-content-wrapper -->
+
+<ng-template #modalUploadItemRule let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Update new item rule</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #formCreate="ngForm">
+            <div class="form-group">
+                <div>
+                    <label for="">Name your item rule<span style="color: red;"> *</span></label>
+                    <input class="form-control" required ngModel name="itemRuleName">
+                </div>
+                <div>
+                    <label for="">Choose your item rule source<span style="color: red;"> *</span></label>
+                    <!-- <input class="form-control" required ngModel name="mlType"> -->
+                    <select class="form-control" required ngModel name="mlType">
+                        <!-- TODO cần đổi sang dùng api để điền thông tin danh sách này -->
+                        <option value="1" selected>Rule source 01</option>
+                        <option value="2">Rule source 02</option>
+                        <option value="3">Rule source 03</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="">Description</label>
+                    <textarea class="form-control" ngModel name="description" rows="3" style="resize: none;"></textarea>
+                </div>
+                <div>
+                    <label for="">Tag</label>
+                    <input class="form-control" ngModel name="tag">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn shadow-none btn-primary" (click)="onSaveItemRule(formCreate)">Save</button>
+        <!-- <button type="button" class="btn shadow-none btn-primary" (click)="modal.close('create')">Save</button> -->
+    </div>
+</ng-template>
